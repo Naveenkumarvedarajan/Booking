@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Shadow's Car Wash & Detailing</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet"/>
+<style>
+:root{--dark:#0A0A0A;--dark2:#111;--dark3:#161616;--dark4:#1C1C1C;--border:#222;--text:#F5F5F5;--muted:#888;--gold:#C8A84B;--gold2:#E8C56A;--sky:#38BDF8;--green:#22C55E;--card-radius:16px;--btn-radius:50px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Poppins',sans-serif;background:var(--dark);color:var(--text);min-height:100vh;overflow-x:hidden}
+
+/* NAV */
+nav{position:sticky;top:0;z-index:200;background:rgba(10,10,10,0.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 40px;height:68px}
+.nav-brand{font-size:16px;font-weight:800;letter-spacing:-0.5px}
+.nav-brand span{color:var(--gold)}
+.nav-links{display:flex;gap:32px}
+.nav-links a{font-size:13px;font-weight:500;color:var(--muted);text-decoration:none;transition:color 0.2s}
+.nav-links a:hover,.nav-links a.active{color:var(--text)}
+.nav-cta{background:var(--gold);color:#000;font-weight:700;font-size:13px;padding:10px 24px;border-radius:var(--btn-radius);border:none;cursor:pointer;font-family:inherit;transition:background 0.2s,transform 0.15s}
+.nav-cta:hover{background:var(--gold2);transform:scale(1.04)}
+.nav-right{display:flex;gap:10px;align-items:center}
+.nav-dash-btn{background:var(--dark3);color:var(--muted);font-weight:600;font-size:12px;padding:9px 18px;border-radius:var(--btn-radius);border:1px solid var(--border);cursor:pointer;font-family:inherit;transition:all 0.2s;text-decoration:none}
+.nav-dash-btn:hover{border-color:#444;color:var(--text)}
+
+/* PROMO STRIP */
+.promo-strip{background:linear-gradient(90deg,var(--gold) 0%,#E8C56A 50%,var(--gold) 100%);color:#000;text-align:center;padding:12px 40px;font-size:13px;font-weight:700;letter-spacing:1px;position:relative;overflow:hidden}
+.promo-strip::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.3),transparent);animation:promoSheen 2s linear infinite}
+@keyframes promoSheen{from{transform:translateX(-100%)}to{transform:translateX(100%)}}
+
+/* HERO */
+.hero{padding:80px 40px 60px;text-align:center;position:relative;overflow:hidden;background:radial-gradient(ellipse at 50% 0%,rgba(200,168,75,0.1) 0%,transparent 60%)}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(200,168,75,0.1);border:1px solid rgba(200,168,75,0.25);color:var(--gold);font-size:12px;font-weight:600;letter-spacing:1px;padding:6px 16px;border-radius:50px;margin-bottom:24px;animation:badgePop 0.6s cubic-bezier(.34,1.56,.64,1) forwards}
+@keyframes badgePop{from{opacity:0;transform:scale(0.8)}to{opacity:1;transform:scale(1)}}
+.hero h1{font-size:clamp(36px,6vw,72px);font-weight:900;line-height:1.05;letter-spacing:-2px;margin-bottom:16px;animation:heroSlide 0.7s ease forwards}
+@keyframes heroSlide{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+.hero h1 .gold{background:linear-gradient(135deg,#C8A84B 0%,#FFD700 50%,#C8A84B 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;background-size:200%;animation:goldShimmer 3s linear infinite}
+@keyframes goldShimmer{0%{background-position:0%}100%{background-position:200%}}
+.hero p{color:var(--muted);font-size:16px;max-width:520px;margin:0 auto 32px;line-height:1.7}
+.hero-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+.btn-primary{background:var(--gold);color:#000;font-weight:700;font-size:14px;padding:14px 32px;border-radius:var(--btn-radius);border:none;cursor:pointer;font-family:inherit;transition:all 0.2s;display:inline-flex;align-items:center;gap:8px}
+.btn-primary:hover{background:var(--gold2);transform:translateY(-2px);box-shadow:0 12px 32px rgba(200,168,75,0.3)}
+.btn-outline{background:transparent;color:var(--text);font-weight:600;font-size:14px;padding:14px 32px;border-radius:var(--btn-radius);border:1px solid var(--border);cursor:pointer;font-family:inherit;transition:all 0.2s;display:inline-flex;align-items:center;gap:8px}
+.btn-outline:hover{border-color:#444;background:rgba(255,255,255,0.04)}
+
+/* CATEGORY PILLS */
+.cat-section{padding:40px 40px 16px}
+.cat-section-label{font-size:11px;font-weight:600;letter-spacing:3px;color:var(--muted);text-transform:uppercase;margin-bottom:16px}
+.cat-pills{display:flex;flex-wrap:wrap;gap:10px}
+.cat-pill{background:var(--dark3);border:1px solid var(--border);color:var(--muted);font-size:13px;font-weight:500;padding:9px 20px;border-radius:50px;cursor:pointer;transition:all 0.2s;font-family:inherit;white-space:nowrap;display:flex;align-items:center;gap:7px}
+.cat-pill:hover{border-color:#444;color:var(--text)}
+.cat-pill.active{color:#000;font-weight:700;border-color:transparent}
+
+/* CAR TYPE */
+.cartype-section{padding:8px 40px 32px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.cartype-label{font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:2px}
+.cartype-pills{display:flex;gap:8px;flex-wrap:wrap}
+.cartype-pill{background:var(--dark3);border:1px solid var(--border);color:var(--muted);font-size:12px;font-weight:600;padding:7px 18px;border-radius:50px;cursor:pointer;transition:all 0.18s;font-family:inherit;display:flex;align-items:center;gap:6px}
+.cartype-pill.active{background:#F5F5F5;color:#000;border-color:#F5F5F5}
+.cartype-pill:hover:not(.active){border-color:#555;color:#ccc}
+
+/* SERVICES GRID */
+.services-section{padding:8px 40px 80px}
+.section-group{margin-bottom:56px}
+.section-group-header{display:flex;align-items:center;gap:14px;margin-bottom:24px}
+.section-group-icon{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.section-group-info h2{font-size:20px;font-weight:800;letter-spacing:-0.5px}
+.section-group-info p{font-size:12px;color:var(--muted);margin-top:2px}
+.section-rule{flex:1;height:1px;background:var(--border)}
+.cards-grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fill,minmax(280px,1fr))}
+
+/* SERVICE CARD */
+.svc-card{background:var(--dark2);border:1px solid var(--border);border-radius:var(--card-radius);padding:24px;display:flex;flex-direction:column;transition:transform 0.25s,box-shadow 0.25s,border-color 0.25s;position:relative;overflow:hidden;animation:cardIn 0.5s ease both}
+@keyframes cardIn{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+.svc-card:hover{transform:translateY(-4px);box-shadow:0 20px 50px rgba(0,0,0,0.5)}
+.card-top-row{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px}
+.card-badge{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:4px 10px;border-radius:50px}
+.card-price-wrap{text-align:right}
+.card-price{font-size:24px;font-weight:900;letter-spacing:-1px;font-family:'Playfair Display',serif}
+.card-price-label{font-size:10px;color:var(--muted);margin-top:1px}
+.card-name{font-size:16px;font-weight:700;margin-bottom:8px;line-height:1.3}
+.card-desc{font-size:12px;color:var(--muted);line-height:1.7;margin-bottom:16px}
+.card-meta{background:rgba(255,255,255,0.03);border-radius:10px;padding:12px 14px;margin-bottom:16px;display:flex;flex-direction:column;gap:7px}
+.card-meta-row{display:flex;justify-content:space-between;align-items:center}
+.card-meta-key{font-size:10px;font-weight:600;color:#444;text-transform:uppercase;letter-spacing:1px}
+.card-meta-val{font-size:11px;color:#666;text-align:right;max-width:180px}
+.card-duration{font-size:11px;font-weight:700;margin-left:4px}
+.book-btn{width:100%;padding:12px;border-radius:50px;border:none;font-size:13px;font-weight:700;font-family:inherit;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:8px;margin-top:auto}
+.book-btn:hover{transform:translateY(-1px)}
+.book-btn svg{transition:transform 0.2s}
+.book-btn:hover svg{transform:translateX(3px)}
+
+/* MODAL / WIZARD */
+.modal-backdrop{display:none;position:fixed;inset:0;z-index:500;background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);align-items:center;justify-content:center;padding:20px}
+.modal-backdrop.open{display:flex;animation:bgFade 0.2s ease}
+@keyframes bgFade{from{opacity:0}to{opacity:1}}
+.wizard{background:var(--dark2);border:1px solid var(--border);border-radius:24px;width:100%;max-width:540px;max-height:92vh;overflow-y:auto;animation:wizardIn 0.35s cubic-bezier(.34,1.36,.64,1)}
+@keyframes wizardIn{from{opacity:0;transform:scale(0.88) translateY(30px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.wizard-head{padding:28px 28px 0;display:flex;justify-content:space-between;align-items:flex-start}
+.wizard-close{background:var(--dark3);border:none;color:var(--muted);width:36px;height:36px;border-radius:50%;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.15s}
+.wizard-close:hover{background:var(--dark4);color:var(--text)}
+.steps-bar{display:flex;align-items:center;padding:20px 28px 0;gap:0}
+.step-item{display:flex;align-items:center;flex:1}
+.step-dot{width:28px;height:28px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--muted);transition:all 0.3s;flex-shrink:0;background:var(--dark2)}
+.step-dot.active{border-color:var(--gold);color:var(--gold);box-shadow:0 0 12px rgba(200,168,75,0.3)}
+.step-dot.done{background:var(--gold);border-color:var(--gold);color:#000}
+.step-line{flex:1;height:2px;background:var(--border);margin:0 4px;transition:background 0.3s}
+.step-line.done{background:var(--gold)}
+.step-label-row{display:flex;justify-content:space-between;padding:6px 28px 0;font-size:10px;font-weight:600;color:var(--muted);letter-spacing:0.5px}
+.wizard-body{padding:24px 28px 28px}
+.step-panel{display:none}
+.step-panel.active{display:block;animation:stepIn 0.3s ease}
+@keyframes stepIn{from{opacity:0;transform:translateX(16px)}to{opacity:1;transform:translateX(0)}}
+.step-title{font-size:20px;font-weight:800;margin-bottom:6px;letter-spacing:-0.5px}
+.step-subtitle{font-size:13px;color:var(--muted);margin-bottom:22px}
+
+/* Car type grid in wizard */
+.cartype-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.ct-option{background:var(--dark3);border:2px solid var(--border);border-radius:14px;padding:18px 16px;cursor:pointer;transition:all 0.2s;text-align:center}
+.ct-option:hover{border-color:#444}
+.ct-option.selected{border-color:var(--gold);background:rgba(200,168,75,0.07)}
+.ct-icon{font-size:28px;margin-bottom:8px}
+.ct-name{font-size:14px;font-weight:700}
+.ct-desc{font-size:11px;color:var(--muted);margin-top:3px}
+
+/* Selected service card in wizard */
+.selected-svc-card{background:var(--dark3);border-radius:14px;padding:16px 18px;display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;border:1px solid var(--border)}
+.ssc-name{font-size:14px;font-weight:700}
+.ssc-sub{font-size:11px;color:var(--muted);margin-top:3px}
+.ssc-price{font-size:20px;font-weight:900;font-family:'Playfair Display',serif;color:var(--gold)}
+
+/* Date / Time grids */
+.date-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:20px}
+.date-tile{background:var(--dark3);border:2px solid var(--border);border-radius:12px;padding:12px 6px;text-align:center;cursor:pointer;transition:all 0.18s}
+.date-tile:hover:not(.disabled){border-color:#555}
+.date-tile.selected{border-color:var(--gold);background:rgba(200,168,75,0.08)}
+.date-tile.disabled{opacity:0.3;pointer-events:none}
+.dt-day{font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+.dt-num{font-size:22px;font-weight:900;margin:4px 0}
+.dt-month{font-size:10px;color:var(--muted)}
+.time-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.time-tile{background:var(--dark3);border:2px solid var(--border);border-radius:10px;padding:10px;text-align:center;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.18s}
+.time-tile:hover{border-color:#555}
+.time-tile.selected{border-color:var(--gold);background:rgba(200,168,75,0.08);color:var(--gold)}
+
+/* Form fields */
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.field-group{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+.field-label{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+.field-input{background:var(--dark3);border:1px solid var(--border);border-radius:10px;padding:11px 14px;font-size:13px;color:var(--text);font-family:inherit;outline:none;transition:border-color 0.2s;width:100%}
+.field-input:focus{border-color:var(--gold)}
+.field-textarea{background:var(--dark3);border:1px solid var(--border);border-radius:10px;padding:11px 14px;font-size:13px;color:var(--text);font-family:inherit;outline:none;transition:border-color 0.2s;resize:vertical;min-height:80px;width:100%}
+.field-textarea:focus{border-color:var(--gold)}
+
+/* Confirm card */
+.confirm-card{background:var(--dark3);border-radius:14px;border:1px solid var(--border);overflow:hidden;margin-bottom:16px}
+.confirm-row{display:flex;justify-content:space-between;padding:11px 16px;border-bottom:1px solid var(--border)}
+.confirm-row:last-child{border-bottom:none}
+.confirm-key{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+.confirm-val{font-size:13px;font-weight:600;text-align:right;max-width:220px}
+.total-row{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;background:rgba(200,168,75,0.07);border-radius:12px;border:1px solid rgba(200,168,75,0.2);margin-bottom:16px}
+.total-label{font-size:13px;font-weight:700}
+.total-val{font-size:26px;font-weight:900;color:var(--gold);font-family:'Playfair Display',serif}
+
+/* Success screen */
+.success-screen{text-align:center;padding:20px 0}
+.success-icon{width:70px;height:70px;background:rgba(34,197,94,0.12);border:2px solid rgba(34,197,94,0.3);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:32px;color:#22C55E;margin:0 auto 20px}
+.success-title{font-size:24px;font-weight:900;margin-bottom:10px}
+.success-sub{font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:24px}
+.booking-ref{background:var(--dark3);border-radius:14px;padding:16px;margin-bottom:24px;border:1px solid var(--border)}
+.br-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:2px;margin-bottom:8px}
+.br-code{font-size:28px;font-weight:900;letter-spacing:4px;color:var(--gold);font-family:'Playfair Display',serif}
+
+/* Wizard footer */
+.wizard-footer{display:flex;align-items:center;justify-content:space-between;padding:16px 28px 24px;border-top:1px solid var(--border)}
+.wiz-back{background:none;border:1px solid var(--border);color:var(--muted);padding:11px 22px;border-radius:50px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;transition:all 0.2s}
+.wiz-back:hover{border-color:#555;color:var(--text)}
+.wiz-next{background:var(--gold);color:#000;border:none;padding:12px 28px;border-radius:50px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;transition:all 0.2s;margin-left:auto}
+.wiz-next:hover:not(:disabled){background:var(--gold2);transform:translateY(-1px)}
+.wiz-next:disabled{opacity:0.4;cursor:not-allowed}
+
+/* Saving state */
+.wiz-next.saving{opacity:0.7;cursor:wait}
+
+/* WhatsApp CTA */
+.wa-section{margin:0 40px 60px;background:linear-gradient(135deg,rgba(37,211,102,0.08),rgba(37,211,102,0.03));border:1px solid rgba(37,211,102,0.15);border-radius:24px;padding:48px 40px;text-align:center}
+.wa-icon{font-size:40px;margin-bottom:16px}
+.wa-title{font-size:24px;font-weight:800;margin-bottom:10px}
+.wa-sub{font-size:14px;color:var(--muted);margin-bottom:28px;line-height:1.7}
+.btn-wa{display:inline-flex;align-items:center;gap:10px;background:#25D366;color:#fff;font-weight:700;font-size:15px;padding:16px 36px;border-radius:50px;text-decoration:none;transition:all 0.2s}
+.btn-wa:hover{background:#1db954;transform:translateY(-2px);box-shadow:0 12px 32px rgba(37,211,102,0.3)}
+
+/* Footer */
+footer{border-top:1px solid var(--border);padding:32px 40px;text-align:center;color:var(--muted);font-size:13px;line-height:1.9}
+footer .mafra{color:var(--gold);font-weight:700}
+
+/* Toast */
+.toast{position:fixed;bottom:32px;left:50%;transform:translateX(-50%) translateY(20px);background:#1A1A1A;border:1px solid #333;color:var(--text);padding:14px 24px;border-radius:50px;font-size:14px;font-weight:600;opacity:0;transition:all 0.35s;pointer-events:none;z-index:999;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.error{border-color:#EF4444;color:#EF4444}
+
+/* Spinner */
+.spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(0,0,0,0.3);border-top-color:#000;border-radius:50%;animation:spin 0.7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+@media(max-width:640px){
+  nav{padding:0 20px}
+  .nav-links{display:none}
+  .hero{padding:60px 20px 40px}
+  .cat-section,.cartype-section,.services-section{padding-left:20px;padding-right:20px}
+  .wa-section{margin:0 20px 40px;padding:32px 24px}
+  .field-row{grid-template-columns:1fr}
+  .date-grid{grid-template-columns:repeat(4,1fr)}
+  footer{padding:24px 20px}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-brand">SHADOW'S <span>DETAILING</span></div>
+  <div class="nav-links">
+    <a href="#" class="active">Services</a>
+    <a href="#wa-section">Contact</a>
+  </div>
+  <div class="nav-right">
+    <a class="nav-dash-btn" href="?page=dashboard" target="_blank">⚙ Dashboard</a>
+    <button class="nav-cta" onclick="openWizard(null)">Book a Service</button>
+  </div>
+</nav>
+
+<!-- PROMO STRIP -->
+<div class="promo-strip">🎉 &nbsp; GRAND OPENING OFFER — Up to 30% Off on All Ceramic & Graphene Coatings &nbsp; 🎉</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-badge"><span>✦</span> MAFRA PROFESSIONAL CHEMICALS</div>
+  <h1>Premium Car Care<br><span class="gold">Done Right</span></h1>
+  <p>From a quick foam wash to full paint correction — Shadow's brings studio-grade detailing to your car.</p>
+  <div class="hero-btns">
+    <button class="btn-primary" onclick="openWizard(null)">📅 Book Now</button>
+    <button class="btn-outline" onclick="document.getElementById('services-start').scrollIntoView({behavior:'smooth'})">View Services ↓</button>
+  </div>
+</div>
+
+<!-- CATEGORY PILLS -->
+<div class="cat-section" id="services-start">
+  <div class="cat-section-label">Browse by Category</div>
+  <div class="cat-pills" id="cat-pills"></div>
+</div>
+
+<!-- CAR TYPE SELECTOR -->
+<div class="cartype-section">
+  <div class="cartype-label">Your Car</div>
+  <div class="cartype-pills" id="cartype-pills">
+    <button class="cartype-pill active" onclick="setCarType('Hatchback',this)">🚗 Hatchback</button>
+    <button class="cartype-pill" onclick="setCarType('Sedan',this)">🚙 Sedan</button>
+    <button class="cartype-pill" onclick="setCarType('SUV',this)">🚐 SUV</button>
+    <button class="cartype-pill" onclick="setCarType('Luxury',this)">💎 Luxury</button>
+  </div>
+</div>
+
+<!-- SERVICES -->
+<div class="services-section" id="services-container"></div>
+
+<!-- WHATSAPP CTA -->
+<div class="wa-section" id="wa-section">
+  <div class="wa-icon">💬</div>
+  <h2 class="wa-title">Have a Question? Chat with Us</h2>
+  <p class="wa-sub">Get an instant quote, check availability, or ask about any service — we reply fast!</p>
+  <a class="btn-wa" href="https://wa.me/919XXXXXXXXX" target="_blank">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+    Chat on WhatsApp
+  </a>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <p>© 2025 Shadow's Car Wash & Detailing · Nandambakkam, Chennai</p>
+  <p>All services use <span class="mafra">MAFRA</span> Professional Chemicals Italy · Prices excl. GST</p>
+</footer>
+
+<!-- BOOKING WIZARD MODAL -->
+<div class="modal-backdrop" id="wizard-backdrop" onclick="handleBackdropClick(event)">
+  <div class="wizard" id="wizard">
+
+    <div class="wizard-head">
+      <div>
+        <div style="font-size:11px;font-weight:600;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:4px">Book Appointment</div>
+        <div style="font-size:18px;font-weight:800" id="wiz-step-title">Choose Car Type</div>
+      </div>
+      <button class="wizard-close" onclick="closeWizard()">✕</button>
+    </div>
+
+    <div class="steps-bar">
+      <div class="step-item"><div class="step-dot active" id="sd-1">1</div><div class="step-line" id="sl-1"></div></div>
+      <div class="step-item"><div class="step-dot" id="sd-2">2</div><div class="step-line" id="sl-2"></div></div>
+      <div class="step-item"><div class="step-dot" id="sd-3">3</div><div class="step-line" id="sl-3"></div></div>
+      <div class="step-item" style="flex:0"><div class="step-dot" id="sd-4">4</div></div>
+    </div>
+    <div class="step-label-row"><span>Car Type</span><span>Schedule</span><span>Details</span><span>Confirm</span></div>
+
+    <div class="wizard-body">
+
+      <!-- STEP 1: Car Type -->
+      <div class="step-panel active" id="step-1">
+        <div class="step-title">Select Car Type</div>
+        <div class="step-subtitle">We'll show you the right price for your vehicle</div>
+        <div id="wiz-svc-summary" style="display:none" class="selected-svc-card">
+          <div>
+            <div class="ssc-name" id="wiz-svc-name"></div>
+            <div class="ssc-sub" id="wiz-svc-cat"></div>
+          </div>
+          <div class="ssc-price" id="wiz-svc-price"></div>
+        </div>
+        <div class="cartype-grid">
+          <div class="ct-option" onclick="selectWizCarType('Hatchback',this)"><div class="ct-icon">🚗</div><div class="ct-name">Hatchback</div><div class="ct-desc">Hatchback, Swift, i20</div></div>
+          <div class="ct-option" onclick="selectWizCarType('Sedan',this)"><div class="ct-icon">🚙</div><div class="ct-name">Sedan</div><div class="ct-desc">City, Verna, Ciaz</div></div>
+          <div class="ct-option" onclick="selectWizCarType('SUV',this)"><div class="ct-icon">🚐</div><div class="ct-name">SUV / MUV</div><div class="ct-desc">Creta, Innova, Fortuner</div></div>
+          <div class="ct-option" onclick="selectWizCarType('Luxury',this)"><div class="ct-icon">💎</div><div class="ct-name">Luxury</div><div class="ct-desc">BMW, Audi, Mercedes</div></div>
+        </div>
+      </div>
+
+      <!-- STEP 2: Schedule -->
+      <div class="step-panel" id="step-2">
+        <div class="step-title">Pick a Date & Time</div>
+        <div class="step-subtitle">Select your preferred appointment slot</div>
+        <div style="font-size:11px;font-weight:600;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px">Available Dates</div>
+        <div class="date-grid" id="date-grid"></div>
+        <div style="font-size:11px;font-weight:600;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin:16px 0 10px">Available Times</div>
+        <div class="time-grid" id="time-grid"></div>
+      </div>
+
+      <!-- STEP 3: Details -->
+      <div class="step-panel" id="step-3">
+        <div class="step-title">Your Details</div>
+        <div class="step-subtitle">So we can confirm your booking</div>
+        <div class="field-row">
+          <div class="field-group"><label class="field-label">Full Name</label><input class="field-input" id="b-name" placeholder="Your name"/></div>
+          <div class="field-group"><label class="field-label">Phone Number</label><input class="field-input" id="b-phone" type="tel" placeholder="+91 XXXXX XXXXX"/></div>
+        </div>
+        <div class="field-row">
+          <div class="field-group"><label class="field-label">Car Model</label><input class="field-input" id="b-carmodel" placeholder="e.g. Honda City"/></div>
+          <div class="field-group"><label class="field-label">Reg. Plate</label><input class="field-input" id="b-plate" placeholder="TN 00 XX 0000"/></div>
+        </div>
+        <div class="field-group"><label class="field-label">Service (auto-filled)</label><input class="field-input" id="b-service" readonly style="color:#666;cursor:default"/></div>
+        <div class="field-group"><label class="field-label">Additional Notes</label><textarea class="field-textarea" id="b-notes" placeholder="Any specific requests or issues to note…"></textarea></div>
+      </div>
+
+      <!-- STEP 4: Confirm -->
+      <div class="step-panel" id="step-4">
+        <div class="step-title">Confirm Booking</div>
+        <div class="step-subtitle">Review your appointment details below</div>
+        <div class="confirm-card" id="confirm-card"></div>
+        <div class="total-row">
+          <div class="total-label">Total Amount</div>
+          <div class="total-val" id="confirm-total">₹0</div>
+        </div>
+        <div style="font-size:11px;color:var(--muted);text-align:center;margin-bottom:4px">Prices exclusive of GST · 50% advance to confirm</div>
+      </div>
+
+      <!-- SUCCESS -->
+      <div class="step-panel" id="step-success">
+        <div class="success-screen">
+          <div class="success-icon">✓</div>
+          <div class="success-title">Booking Confirmed!</div>
+          <p class="success-sub">We'll call you within 30 minutes to confirm your appointment at Shadow's Detailing Studio.</p>
+          <div class="booking-ref">
+            <div class="br-label">Booking Reference</div>
+            <div class="br-code" id="booking-ref-code">SHD-0000</div>
+          </div>
+          <button class="btn-primary" style="width:100%;justify-content:center" onclick="closeWizard()">Done 🎉</button>
+        </div>
+      </div>
+
+    </div><!-- /wizard-body -->
+
+    <div class="wizard-footer" id="wizard-footer">
+      <button class="wiz-back" id="wiz-back" onclick="wizBack()" style="display:none">← Back</button>
+      <button class="wiz-next" id="wiz-next" onclick="wizNext()" disabled>Choose Car Type</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ════════════════════════════════════════════════
+// SERVICE DATA
+// ════════════════════════════════════════════════
+const SECTIONS = [
+  { category:"Car Wash", icon:"💧", accent:"#38BDF8", type:"Carwash", items:[
+    { name:"Basic Exterior Wash", desc:"Rinse, hand wash, dry & tyre clean", chemical:"Mafra Maniac Shampoo", duration:"30 min", prices:{Hatchback:300,Sedan:350,SUV:450,Luxury:600} },
+    { name:"Foam Wash", desc:"Snow foam pre-soak + contact wash + blow dry", chemical:"Mafra Party Snow + Car Shampoo", duration:"45 min", prices:{Hatchback:500,Sedan:600,SUV:750,Luxury:950} },
+    { name:"Foam Wash + Interior Vacuum", desc:"Full foam exterior wash with interior vacuum & mat clean", chemical:"Mafra Party Snow + Interior Cleaner", duration:"1 hr", prices:{Hatchback:700,Sedan:800,SUV:1000,Luxury:1300} },
+    { name:"Exterior + Interior Detail Wash", desc:"Deep foam wash, dashboard wipe, seat vacuum, glass clean, tyre shine", chemical:"Mafra Full Line Wash Kit", duration:"1.5 hrs", prices:{Hatchback:1200,Sedan:1400,SUV:1700,Luxury:2200} },
+    { name:"Engine Bay Wash", desc:"Degrease, clean & dressing of engine bay compartment", chemical:"Mafra Maniac Engine Degreaser + Plast4", duration:"45 min", prices:{Hatchback:800,Sedan:900,SUV:1100,Luxury:1500} },
+    { name:"Tyre & Rim Detail", desc:"Brake dust removal, rim polish & tyre glaze dressing", chemical:"Mafra Wheel Cleaner + Tyre Glaze", duration:"45 min", prices:{Hatchback:600,Sedan:700,SUV:900,Luxury:1200} },
+    { name:"Full Detail Package", desc:"Complete exterior + interior + engine bay + tyre & rim — the works", chemical:"Mafra Complete Detailing Line", duration:"3–4 hrs", prices:{Hatchback:2800,Sedan:3200,SUV:4000,Luxury:5500} },
+  ]},
+  { category:"Paint Correction & Polish", icon:"✦", accent:"#C8A84B", type:"Detailing", items:[
+    { name:"Stage 1 – Light Polish", desc:"Single-stage light polish to remove light swirls, water spots & haze", chemical:"Mafra Illumina 2.0 Ultra Finish Polish", duration:"2–3 hrs", prices:{Hatchback:2500,Sedan:3000,SUV:3800,Luxury:5000}, tag:"Entry" },
+    { name:"Stage 2 – Medium Cut Polish", desc:"Two-stage compound + polish for deeper scratches, oxidation & defects", chemical:"Mafra Compound + Illumina 2.0", duration:"4–5 hrs", prices:{Hatchback:4500,Sedan:5500,SUV:6500,Luxury:9000}, tag:"Popular" },
+    { name:"Stage 3 – Full Paint Correction", desc:"Multi-stage correction for severe paint defects, RIDS, holograms & deep swirls", chemical:"Mafra Heavy Cut + Illumina 2.0 + Last Touch", duration:"8–10 hrs", prices:{Hatchback:8500,Sedan:10000,SUV:13000,Luxury:18000}, tag:"Pro" },
+  ]},
+  { category:"Ceramic Coating", icon:"◈", accent:"#60A5FA", type:"Detailing", items:[
+    { name:"Ceramic Spray Sealant", desc:"SiO2-infused spray sealant for gloss & short-term paint protection. Lasts 3–6 months", chemical:"Mafra Ceramic Shampoo + SiO2 Sealant", duration:"1–2 hrs", prices:{Hatchback:1800,Sedan:2200,SUV:2800,Luxury:3800}, tag:"Quick" },
+    { name:"Forever Young 2.0 Ceramic Coat", desc:"10H hydrophobic ceramic coat with self-cleaning capability, UV protection & 3D gloss. Lasts up to 3 years", chemical:"Mafra Forever Young 2.0", duration:"4–6 hrs", prices:{Hatchback:7500,Sedan:9000,SUV:11000,Luxury:15000}, tag:"Best Value" },
+    { name:"Maniac Line 5-Year Ceramic", desc:"Professional-grade 2-layer ceramic system (base + top coat). Ultimate paint protection lasting 5+ years", chemical:"Mafra Maniac Line 5-Year Coating (50+50ml)", duration:"6–8 hrs", prices:{Hatchback:18000,Sedan:22000,SUV:27000,Luxury:38000}, tag:"Premium" },
+  ]},
+  { category:"Graphene Coating", icon:"⬡", accent:"#34D399", type:"Detailing", items:[
+    { name:"Graphene Spray Top Coat", desc:"Graphene-infused spray coating for enhanced hydrophobicity, anti-static properties & deeper gloss", chemical:"Mafra Graphene Coating Spray", duration:"2–3 hrs", prices:{Hatchback:5500,Sedan:6500,SUV:8000,Luxury:11000}, tag:"New" },
+    { name:"Graphene Pro Coating", desc:"Professional graphene nano-coating. Superior hardness, heat dissipation & extreme water beading. Lasts 3–5 years", chemical:"Mafra Maniac Graphene Pro", duration:"5–7 hrs", prices:{Hatchback:14000,Sedan:17000,SUV:21000,Luxury:30000}, tag:"Elite" },
+  ]},
+  { category:"Glass & Windshield", icon:"◇", accent:"#C084FC", type:"Detailing", items:[
+    { name:"Glass Coating – Rain Repellent", desc:"Hydrophobic nano-glass coating for crystal-clear vision in rain. Maximum visibility & safety", chemical:"Mafra Maniac Rainspeed Glass Coating", duration:"1 hr", prices:{Hatchback:2200,Sedan:2500,SUV:3000,Luxury:4000}, tag:"Safety" },
+    { name:"Headlight Restoration & Coating", desc:"Removes yellowing & oxidation from headlights, restores clarity & applies UV-protective coating", chemical:"Mafra Regenera View + Headlight Coating", duration:"1.5 hrs", prices:{Hatchback:1500,Sedan:1500,SUV:1800,Luxury:2500}, tag:"Restore" },
+  ]},
+  { category:"Paint Protection Film", icon:"▣", accent:"#F97316", type:"Detailing", items:[
+    { name:"PPF High-Impact Zones", desc:"Self-healing PPF on bonnet, bumper, mirrors & door edges. Guards against stone chips & scratches", chemical:"Mafra PPF Compatible Pre-Coat", duration:"6–8 hrs", prices:{Hatchback:22000,Sedan:26000,SUV:32000,Luxury:45000}, tag:"Shield" },
+    { name:"Full Car PPF Wrap", desc:"Complete paint protection film coverage on all panels. Maximum defence with self-healing technology", chemical:"Mafra PPF Primer + Sealant", duration:"2–3 days", prices:{Hatchback:65000,Sedan:78000,SUV:95000,Luxury:130000}, tag:"Ultimate" },
+  ]},
+  { category:"Trim & Plastic Care", icon:"◉", accent:"#FB923C", type:"Detailing", items:[
+    { name:"Plastic & Rubber Restore", desc:"Restores faded exterior & interior plastics to deep black. UV protection included", chemical:"Mafra Forever Young 2.0 Plastic + Diamant Plast Four", duration:"1 hr", prices:{Hatchback:900,Sedan:1000,SUV:1300,Luxury:1800}, tag:"Restore" },
+    { name:"Tyre Coating & Glaze", desc:"Deep shine tyre dressing with long-lasting protective coating. Anti-browning formula", chemical:"Mafra Tyre Glaze + Trim Coat", duration:"45 min", prices:{Hatchback:600,Sedan:700,SUV:900,Luxury:1200}, tag:"Finish" },
+  ]},
+];
+
+const CAT_COLORS = {
+  "Car Wash":                  { accent:"#38BDF8", bg:"rgba(56,189,248,0.1)",   icon:"💧" },
+  "Paint Correction & Polish": { accent:"#C8A84B", bg:"rgba(200,168,75,0.1)",  icon:"✦"  },
+  "Ceramic Coating":           { accent:"#60A5FA", bg:"rgba(96,165,250,0.1)",  icon:"◈"  },
+  "Graphene Coating":          { accent:"#34D399", bg:"rgba(52,211,153,0.1)",  icon:"⬡"  },
+  "Glass & Windshield":        { accent:"#C084FC", bg:"rgba(192,132,252,0.1)", icon:"◇"  },
+  "Paint Protection Film":     { accent:"#F97316", bg:"rgba(249,115,22,0.1)",  icon:"▣"  },
+  "Trim & Plastic Care":       { accent:"#FB923C", bg:"rgba(251,146,60,0.1)",  icon:"◉"  },
+};
+
+// ════════════════════════════════════════════════
+// STATE
+// ════════════════════════════════════════════════
+let carType = "Hatchback";
+let activeCategory = null;
+let wizState = { step:1, carType:"Hatchback", service:null, date:null, time:null };
+
+// ════════════════════════════════════════════════
+// CATEGORY PILLS
+// ════════════════════════════════════════════════
+function buildCatPills() {
+  const wrap = document.getElementById('cat-pills');
+  wrap.innerHTML = '';
+  const allBtn = document.createElement('button');
+  allBtn.className = 'cat-pill' + (activeCategory === null ? ' active' : '');
+  allBtn.style.cssText = activeCategory === null ? 'background:#F5F5F5;color:#000;border-color:#F5F5F5' : '';
+  allBtn.innerHTML = '⚡ All Services';
+  allBtn.onclick = () => { activeCategory = null; buildCatPills(); renderServices(); };
+  wrap.appendChild(allBtn);
+  SECTIONS.forEach(s => {
+    const c = CAT_COLORS[s.category] || { accent:'#888', bg:'#1A1A1A', icon:'●' };
+    const isActive = activeCategory === s.category;
+    const btn = document.createElement('button');
+    btn.className = 'cat-pill' + (isActive ? ' active' : '');
+    if (isActive) btn.style.cssText = `background:${c.bg};color:${c.accent};border-color:${c.accent}55`;
+    btn.innerHTML = c.icon + ' ' + s.category;
+    btn.onclick = () => { activeCategory = (activeCategory === s.category) ? null : s.category; buildCatPills(); renderServices(); };
+    wrap.appendChild(btn);
+  });
+}
+
+// ════════════════════════════════════════════════
+// CAR TYPE
+// ════════════════════════════════════════════════
+function setCarType(type, btn) {
+  carType = type;
+  document.querySelectorAll('.cartype-pill').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderServices();
+}
+
+// ════════════════════════════════════════════════
+// RENDER SERVICES
+// ════════════════════════════════════════════════
+function renderServices() {
+  const container = document.getElementById('services-container');
+  const filtered = activeCategory ? SECTIONS.filter(s => s.category === activeCategory) : SECTIONS;
+  container.innerHTML = '';
+  filtered.forEach((section, si) => {
+    const c = CAT_COLORS[section.category] || { accent:'#888', bg:'rgba(136,136,136,0.1)', icon:'●' };
+    const group = document.createElement('div');
+    group.className = 'section-group';
+    group.innerHTML = `
+      <div class="section-group-header">
+        <div class="section-group-icon" style="background:${c.bg};color:${c.accent}">${c.icon}</div>
+        <div class="section-group-info">
+          <h2 style="color:${c.accent}">${section.category}</h2>
+          <p>${section.type} Services · ${section.items.length} options</p>
+        </div>
+        <div class="section-rule"></div>
+      </div>
+      <div class="cards-grid" id="grid-${si}"></div>`;
+    container.appendChild(group);
+    const grid = document.getElementById('grid-' + si);
+    section.items.forEach((item, ii) => {
+      const price = item.prices[carType];
+      const card = document.createElement('div');
+      card.className = 'svc-card';
+      card.style.animationDelay = (si * 0.05 + ii * 0.05) + 's';
+      card.addEventListener('mouseenter', () => {
+        card.style.borderColor = c.accent + '44';
+        card.querySelector('.card-top-line').style.opacity = '1';
+      });
+      card.addEventListener('mouseleave', () => {
+        card.style.borderColor = '';
+        card.querySelector('.card-top-line').style.opacity = '0';
+      });
+      const tagHtml = item.tag ? `<span class="card-badge" style="background:${c.bg};color:${c.accent}">${item.tag}</span>` : `<span></span>`;
+      card.innerHTML = `
+        <div style="position:absolute;top:0;left:0;right:0;height:2px;background:${c.accent};opacity:0;transition:opacity 0.25s" class="card-top-line"></div>
+        <div class="card-top-row">
+          ${tagHtml}
+          <div class="card-price-wrap">
+            <div class="card-price" style="color:${c.accent}">₹${price.toLocaleString('en-IN')}</div>
+            <div class="card-price-label">for ${carType}</div>
+          </div>
+        </div>
+        <div class="card-name">${item.name}</div>
+        <div class="card-desc">${item.desc}</div>
+        <div class="card-meta">
+          <div class="card-meta-row"><span class="card-meta-key">Chemical</span><span class="card-meta-val">${item.chemical}</span></div>
+          <div class="card-meta-row"><span class="card-meta-key">Duration</span><span class="card-duration" style="color:${c.accent}">${item.duration}</span></div>
+        </div>
+        <button class="book-btn" style="background:${c.bg};color:${c.accent}"
+          onmouseenter="this.style.background='${c.accent}';this.style.color='#000'"
+          onmouseleave="this.style.background='${c.bg}';this.style.color='${c.accent}'"
+          onclick='openWizard(${JSON.stringify(item).replace(/'/g,"&#39;")})'>
+          Book Now
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </button>`;
+      grid.appendChild(card);
+    });
+  });
+}
+
+// ════════════════════════════════════════════════
+// WIZARD
+// ════════════════════════════════════════════════
+function openWizard(item) {
+  wizState = { step:1, carType:carType, service:item, date:null, time:null };
+  document.getElementById('wizard-backdrop').classList.add('open');
+  if (item) {
+    document.getElementById('wiz-svc-summary').style.display = 'flex';
+    document.getElementById('wiz-svc-name').textContent = item.name;
+    document.getElementById('wiz-svc-cat').textContent = item.chemical;
+    document.getElementById('wiz-svc-price').textContent = '₹' + item.prices[carType].toLocaleString('en-IN');
+    document.getElementById('b-service').value = item.name;
+  } else {
+    document.getElementById('wiz-svc-summary').style.display = 'none';
+    document.getElementById('b-service').value = '';
+  }
+  goToStep(1);
+  buildDateGrid();
+  buildTimeGrid();
+}
+
+function closeWizard() {
+  document.getElementById('wizard-backdrop').classList.remove('open');
+}
+
+function handleBackdropClick(e) {
+  if (e.target === document.getElementById('wizard-backdrop')) closeWizard();
+}
+
+function goToStep(n) {
+  wizState.step = n;
+  [1,2,3,4,'success'].forEach(s => {
+    const el = document.getElementById('step-' + s);
+    if (el) el.classList.toggle('active', s === n);
+  });
+  for (let i=1; i<=4; i++) {
+    const dot  = document.getElementById('sd-' + i);
+    const line = document.getElementById('sl-' + i);
+    if (dot)  { dot.classList.toggle('active', i === n); dot.classList.toggle('done', i < n); }
+    if (line) line.classList.toggle('done', i < n);
+  }
+  const back   = document.getElementById('wiz-back');
+  const next   = document.getElementById('wiz-next');
+  const footer = document.getElementById('wizard-footer');
+  back.style.display = (n > 1 && n !== 'success') ? 'block' : 'none';
+  if (n === 'success') { footer.style.display = 'none'; return; }
+  footer.style.display = 'flex';
+  const labels = { 1:'Continue →', 2:'Continue →', 3:'Review Booking →', 4:'Confirm & Book ✓' };
+  next.textContent = labels[n] || 'Next';
+  next.disabled = !canProceed(n);
+  if (n === 4) buildConfirmCard();
+}
+
+function canProceed(step) {
+  if (step === 1) return !!wizState.carType;
+  if (step === 2) return !!(wizState.date && wizState.time);
+  return true;
+}
+
+function wizNext() {
+  const n = wizState.step;
+  if (n < 4) { goToStep(n + 1); return; }
+  submitBooking();
+}
+
+function wizBack() {
+  if (wizState.step > 1) goToStep(wizState.step - 1);
+}
+
+function selectWizCarType(type, el) {
+  wizState.carType = type;
+  document.querySelectorAll('.ct-option').forEach(e => e.classList.remove('selected'));
+  el.classList.add('selected');
+  if (wizState.service) {
+    document.getElementById('wiz-svc-price').textContent = '₹' + wizState.service.prices[type].toLocaleString('en-IN');
+  }
+  document.getElementById('wiz-next').disabled = false;
+}
+
+function buildDateGrid() {
+  const grid = document.getElementById('date-grid');
+  grid.innerHTML = '';
+  const today = new Date();
+  const days   = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  for (let i = 1; i <= 8; i++) {
+    const d = new Date(today);
+    d.setDate(today.getDate() + i);
+    const isSun = d.getDay() === 0;
+    const tile  = document.createElement('div');
+    tile.className = 'date-tile' + (isSun ? ' disabled' : '');
+    const dateStr = d.toISOString().slice(0,10);
+    tile.innerHTML = `<div class="dt-day">${days[d.getDay()]}</div><div class="dt-num">${d.getDate()}</div><div class="dt-month">${months[d.getMonth()]}</div>`;
+    tile.onclick = () => {
+      document.querySelectorAll('.date-tile').forEach(t => t.classList.remove('selected'));
+      tile.classList.add('selected');
+      wizState.date = dateStr;
+      document.getElementById('wiz-next').disabled = !canProceed(2);
+    };
+    grid.appendChild(tile);
+  }
+}
+
+function buildTimeGrid() {
+  const grid  = document.getElementById('time-grid');
+  grid.innerHTML = '';
+  const slots = ['8:00 AM','9:00 AM','10:00 AM','11:00 AM','12:00 PM','2:00 PM','3:00 PM','4:00 PM','5:00 PM'];
+  slots.forEach(t => {
+    const tile = document.createElement('div');
+    tile.className = 'time-tile';
+    tile.textContent = t;
+    tile.onclick = () => {
+      document.querySelectorAll('.time-tile').forEach(x => x.classList.remove('selected'));
+      tile.classList.add('selected');
+      wizState.time = t;
+      document.getElementById('wiz-next').disabled = !canProceed(2);
+    };
+    grid.appendChild(tile);
+  });
+}
+
+function buildConfirmCard() {
+  const name  = document.getElementById('b-name').value    || '—';
+  const phone = document.getElementById('b-phone').value   || '—';
+  const car   = document.getElementById('b-carmodel').value|| '—';
+  const plate = document.getElementById('b-plate').value   || '—';
+  const svc   = document.getElementById('b-service').value || (wizState.service ? wizState.service.name : '—');
+  const price = wizState.service ? wizState.service.prices[wizState.carType] : 0;
+  document.getElementById('confirm-total').textContent = '₹' + price.toLocaleString('en-IN');
+  const rows = [
+    ['Customer', name], ['Phone', phone], ['Car', car + ' · ' + plate],
+    ['Car Type', wizState.carType], ['Service', svc],
+    ['Date', wizState.date || '—'], ['Time', wizState.time || '—'],
+  ];
+  document.getElementById('confirm-card').innerHTML = rows.map(([k,v]) =>
+    `<div class="confirm-row"><span class="confirm-key">${k}</span><span class="confirm-val">${v}</span></div>`
+  ).join('');
+}
+
+// ════════════════════════════════════════════════
+// SUBMIT TO GOOGLE APPS SCRIPT
+// ════════════════════════════════════════════════
+function submitBooking() {
+  const btn = document.getElementById('wiz-next');
+  btn.classList.add('saving');
+  btn.innerHTML = '<span class="spinner"></span> Saving…';
+  btn.disabled = true;
+
+  const payload = {
+    customerName: document.getElementById('b-name').value    || '—',
+    phone:        document.getElementById('b-phone').value   || '—',
+    carModel:     document.getElementById('b-carmodel').value|| '—',
+    regPlate:     document.getElementById('b-plate').value   || '—',
+    carType:      wizState.carType,
+    service:      document.getElementById('b-service').value || (wizState.service ? wizState.service.name : '—'),
+    category:     wizState.service ? SECTIONS.find(s => s.items.find(i => i.name === wizState.service.name))?.category || '' : '',
+    price:        wizState.service ? wizState.service.prices[wizState.carType] : 0,
+    date:         wizState.date || '—',
+    time:         wizState.time || '—',
+    notes:        document.getElementById('b-notes').value   || '',
+  };
+
+  // Call the Apps Script function
+  google.script.run
+    .withSuccessHandler(function(result) {
+      btn.classList.remove('saving');
+      btn.disabled = false;
+      btn.textContent = 'Confirm & Book ✓';
+      if (result && result.success) {
+        document.getElementById('booking-ref-code').textContent = result.ref;
+        goToStep('success');
+        showToast('🎉 Booking saved! Ref: ' + result.ref);
+      } else {
+        showToast('❌ Error: ' + (result ? result.error : 'Unknown error'), true);
+      }
+    })
+    .withFailureHandler(function(err) {
+      btn.classList.remove('saving');
+      btn.disabled = false;
+      btn.textContent = 'Confirm & Book ✓';
+      showToast('❌ Failed to save booking. Please try again.', true);
+      console.error(err);
+    })
+    .saveBooking(payload);
+}
+
+// Toast
+function showToast(msg, isError) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className   = 'toast show' + (isError ? ' error' : '');
+  setTimeout(() => t.className = 'toast', 3500);
+}
+
+// ════════════════════════════════════════════════
+// INIT
+// ════════════════════════════════════════════════
+buildCatPills();
+renderServices();
+</script>
+</body>
+</html>

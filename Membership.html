@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Shadow's — Membership Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@700;900&family=Bebas+Neue&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --dark:#0A0A0A;--dark2:#111;--dark3:#161616;--dark4:#1C1C1C;
+  --border:#222;--text:#F5F5F5;--muted:#888;
+  --gold:#C8A84B;--gold2:#E8C56A;
+  --cyan:#00d4ff;--cyan2:#0099cc;
+  --green:#00e676;--red:#ff5252;
+  --card-radius:18px;--btn-radius:50px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Poppins',sans-serif;background:var(--dark);color:var(--text);min-height:100vh}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 50% at 50% -20%,rgba(0,212,255,0.06),transparent 60%);pointer-events:none;z-index:0}
+
+/* NAV */
+nav{position:sticky;top:0;z-index:200;background:rgba(10,10,10,0.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 40px;height:68px}
+.nav-brand{font-size:16px;font-weight:800;letter-spacing:-0.5px}
+.nav-brand span{color:var(--gold)}
+.nav-links{display:flex;gap:24px;align-items:center}
+.nav-links a{font-size:13px;font-weight:500;color:var(--muted);text-decoration:none;transition:color 0.2s}
+.nav-links a:hover,.nav-links a.active{color:var(--text)}
+.nav-cta{background:var(--gold);color:#000;font-weight:700;font-size:13px;padding:10px 24px;border-radius:var(--btn-radius);border:none;cursor:pointer;font-family:inherit;transition:all 0.2s;text-decoration:none;display:inline-block}
+.nav-cta:hover{background:var(--gold2)}
+
+/* HERO STRIP */
+.mem-hero{
+  background:linear-gradient(135deg,rgba(0,212,255,0.08) 0%,rgba(200,168,75,0.05) 100%);
+  border-bottom:1px solid var(--border);
+  padding:48px 40px 36px;text-align:center;position:relative;z-index:1;
+}
+.mem-hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.25);color:var(--cyan);font-size:11px;font-weight:700;letter-spacing:2px;padding:5px 16px;border-radius:50px;margin-bottom:20px;text-transform:uppercase}
+.mem-hero h1{font-size:clamp(28px,5vw,54px);font-weight:900;letter-spacing:-1.5px;margin-bottom:10px}
+.mem-hero h1 span{color:var(--cyan)}
+.mem-hero p{font-size:14px;color:var(--muted);max-width:480px;margin:0 auto}
+
+/* TIER LEGEND */
+.tier-legend{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;padding:20px 40px;border-bottom:1px solid var(--border);position:relative;z-index:1}
+.tier-pill{display:flex;align-items:center;gap:7px;background:var(--dark2);border:1px solid var(--border);border-radius:50px;padding:7px 16px;font-size:12px;font-weight:600}
+.tier-dot{width:8px;height:8px;border-radius:50%}
+
+/* MAIN LAYOUT */
+.mem-wrap{position:relative;z-index:1;max-width:780px;margin:0 auto;padding:36px 24px 80px}
+
+/* TABS */
+.mem-tabs{display:flex;gap:6px;background:var(--dark2);border:1px solid var(--border);border-radius:14px;padding:5px;margin-bottom:28px}
+.mem-tab{flex:1;padding:11px;border:1px solid transparent;border-radius:10px;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;color:var(--muted);background:transparent;transition:all 0.2s}
+.mem-tab.active{background:var(--dark3);color:var(--cyan);border-color:var(--border)}
+.mem-panel{display:none}.mem-panel.active{display:block}
+
+/* CARDS */
+.mcard{background:var(--dark2);border:1px solid var(--border);border-radius:var(--card-radius);padding:28px;margin-bottom:18px}
+.mcard-title{font-size:12px;font-weight:700;letter-spacing:3px;color:var(--cyan);text-transform:uppercase;margin-bottom:20px}
+
+/* FORM */
+.mfield{margin-bottom:14px}
+.mfield label{display:block;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin-bottom:6px}
+.mfield input{width:100%;background:var(--dark3);border:1px solid var(--border);border-radius:10px;padding:12px 14px;font-family:inherit;font-size:14px;color:var(--text);outline:none;transition:border-color 0.2s;letter-spacing:1.5px;text-transform:uppercase}
+.mfield input.normal{text-transform:none;letter-spacing:0}
+.mfield input::placeholder{text-transform:none;letter-spacing:0;color:var(--muted)}
+.mfield input:focus{border-color:var(--cyan)}
+.mrow2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+/* BUTTONS */
+.mbtn{width:100%;padding:14px;border-radius:50px;border:none;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:8px;margin-top:4px}
+.mbtn-cyan{background:linear-gradient(135deg,var(--cyan),var(--cyan2));color:#000}
+.mbtn-cyan:hover{box-shadow:0 6px 24px rgba(0,212,255,0.3);transform:translateY(-1px)}
+.mbtn-gold{background:linear-gradient(135deg,var(--gold),#b8860b);color:#000}
+.mbtn-gold:hover{box-shadow:0 6px 24px rgba(200,168,75,0.3);transform:translateY(-1px)}
+.mbtn-outline{background:transparent;border:1px solid var(--border);color:var(--muted);font-size:13px}
+.mbtn-outline:hover{border-color:var(--cyan);color:var(--cyan)}
+.mbtn-green{background:transparent;border:1px solid rgba(0,230,118,0.3);color:var(--green);background:rgba(0,230,118,0.05)}
+.mbtn-green:hover{background:rgba(0,230,118,0.1)}
+.mbtn:disabled{opacity:0.4;cursor:not-allowed;transform:none!important;box-shadow:none!important}
+
+/* RESULT CARD */
+.result-card{background:var(--dark2);border:1px solid rgba(0,212,255,0.2);border-radius:var(--card-radius);padding:28px;margin-bottom:18px;animation:fadeUp 0.4s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+
+/* TIER BADGE */
+.tier-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 16px;border-radius:50px;font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:20px}
+
+/* PROGRESS */
+.progress-section{margin:20px 0}
+.progress-label{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.progress-label-left{font-size:12px;color:var(--muted)}
+.progress-label-right{font-size:12px;font-weight:700}
+.progress-track{height:10px;background:var(--dark3);border-radius:50px;overflow:hidden;margin-bottom:6px}
+.progress-fill{height:100%;border-radius:50px;transition:width 0.8s cubic-bezier(.34,1.36,.64,1)}
+.progress-hint{font-size:11px;color:var(--muted)}
+
+/* STAT GRID */
+.stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:20px 0}
+.stat-box{background:var(--dark3);border-radius:12px;padding:16px;text-align:center}
+.stat-box-val{font-size:26px;font-weight:900;font-family:'Playfair Display',serif;line-height:1}
+.stat-box-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:6px}
+
+/* WASH HISTORY */
+.wash-history{margin-top:20px}
+.wash-history-title{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:2px;margin-bottom:12px}
+.wash-item{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:var(--dark3);border-radius:10px;margin-bottom:6px;font-size:12px}
+.wash-item-num{font-weight:700;color:var(--cyan)}
+.wash-item-date{color:var(--muted)}
+.wash-item-month{font-size:10px;color:var(--muted);text-align:right}
+
+/* MEMBER LIST TABLE */
+.member-table-wrap{overflow-x:auto;border-radius:12px;border:1px solid var(--border)}
+.member-table{width:100%;border-collapse:collapse;font-size:13px}
+.member-table th{background:var(--dark3);padding:11px 14px;text-align:left;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;white-space:nowrap;border-bottom:1px solid var(--border)}
+.member-table td{padding:12px 14px;border-bottom:1px solid rgba(255,255,255,0.04);vertical-align:middle}
+.member-table tr:last-child td{border-bottom:none}
+.member-table tr:hover td{background:rgba(255,255,255,0.02)}
+
+/* Empty */
+.empty-msg{text-align:center;padding:48px 20px;color:var(--muted)}
+.empty-icon{font-size:40px;margin-bottom:12px}
+
+/* Spinner */
+.spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(0,212,255,0.25);border-top-color:var(--cyan);border-radius:50%;animation:spin 0.7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* Toast */
+.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--dark2);border:1px solid var(--border);border-radius:50px;padding:12px 24px;font-size:13px;font-weight:600;z-index:999;transition:all 0.35s;white-space:nowrap;max-width:92vw;opacity:0}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+.toast.ok{border-color:rgba(0,230,118,0.5);color:var(--green)}
+.toast.err{border-color:rgba(255,82,82,0.5);color:var(--red)}
+
+@media(max-width:600px){
+  nav{padding:0 20px}.nav-links{display:none}
+  .mem-hero{padding:36px 20px 28px}
+  .tier-legend{padding:16px 20px}
+  .mem-wrap{padding:24px 16px 60px}
+  .mrow2{grid-template-columns:1fr}
+  .stat-grid{grid-template-columns:repeat(3,1fr)}
+}
+
+/* ── PIN LOCK OVERLAY ── */
+.pin-backdrop{display:none;position:fixed;inset:0;z-index:900;background:rgba(0,0,0,0.88);backdrop-filter:blur(12px);align-items:center;justify-content:center;padding:20px}
+.pin-backdrop.open{display:flex;animation:pinFadeIn 0.2s ease}
+@keyframes pinFadeIn{from{opacity:0}to{opacity:1}}
+.pin-box{background:var(--dark2);border:1px solid var(--border);border-radius:24px;padding:40px 36px;width:100%;max-width:360px;text-align:center;animation:pinSlideUp 0.3s cubic-bezier(.34,1.36,.64,1)}
+@keyframes pinSlideUp{from{opacity:0;transform:translateY(30px) scale(0.95)}to{opacity:1;transform:translateY(0) scale(1)}}
+.pin-lock-icon{width:64px;height:64px;background:rgba(0,212,255,0.1);border:2px solid rgba(0,212,255,0.25);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 20px}
+.pin-title{font-size:20px;font-weight:800;letter-spacing:-0.5px;margin-bottom:6px}
+.pin-subtitle{font-size:13px;color:var(--muted);margin-bottom:28px}
+.pin-dots{display:flex;gap:14px;justify-content:center;margin-bottom:28px}
+.pin-dot{width:16px;height:16px;border-radius:50%;border:2px solid var(--border);background:transparent;transition:all 0.2s}
+.pin-dot.filled{background:var(--cyan);border-color:var(--cyan);box-shadow:0 0 10px rgba(0,212,255,0.5)}
+.pin-dot.error{background:var(--red)!important;border-color:var(--red)!important;box-shadow:0 0 10px rgba(255,82,82,0.5)!important}
+.pin-dot.success{background:var(--green)!important;border-color:var(--green)!important;box-shadow:0 0 10px rgba(0,230,118,0.5)!important}
+.pin-pad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+.pin-key{background:var(--dark3);border:1px solid var(--border);border-radius:14px;padding:18px 10px;font-size:20px;font-weight:700;font-family:inherit;color:var(--text);cursor:pointer;transition:all 0.15s}
+.pin-key:hover{background:var(--dark4);border-color:#444;transform:scale(1.05)}
+.pin-key:active{transform:scale(0.96)}
+.pin-key.del{font-size:16px;color:var(--muted)}
+.pin-key.del:hover{color:var(--red);border-color:rgba(255,82,82,0.4)}
+.pin-error-msg{font-size:12px;color:var(--red);min-height:18px;margin-bottom:8px;font-weight:600}
+.pin-cancel{background:transparent;border:1px solid var(--border);color:var(--muted);padding:12px;border-radius:50px;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s;width:100%;margin-top:4px}
+.pin-cancel:hover{border-color:#444;color:var(--text)}
+.pin-attempts{font-size:11px;color:var(--muted);margin-top:10px}
+@keyframes pinShake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-6px)}80%{transform:translateX(6px)}}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-brand">SHADOW'S <span>DETAILING</span></div>
+  <div class="nav-links">
+    <a href="?page=index">Services</a>
+    <a href="?page=membership" class="active">Membership</a>
+    <a href="?page=dashboard">Dashboard</a>
+  </div>
+  <a class="nav-cta" href="?page=index">Book a Service</a>
+</nav>
+
+<!-- HERO -->
+<div class="mem-hero">
+  <div class="mem-hero-badge">🏅 Loyalty Programme</div>
+  <h1>Shadow's <span>Membership</span></h1>
+  <p>Track your washes, earn tier upgrades, and unlock exclusive perks — every visit counts.</p>
+</div>
+
+<!-- TIER LEGEND -->
+<div class="tier-legend">
+  <div class="tier-pill"><div class="tier-dot" style="background:#00d4ff"></div> Platinum — 40+ washes</div>
+  <div class="tier-pill"><div class="tier-dot" style="background:#f0c040"></div> Gold — 20+ washes</div>
+  <div class="tier-pill"><div class="tier-dot" style="background:#c0c0c0"></div> Silver — 10+ washes</div>
+  <div class="tier-pill"><div class="tier-dot" style="background:#cd7f32"></div> Bronze — 1+ wash</div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="mem-wrap">
+
+  <!-- TABS -->
+  <div class="mem-tabs">
+    <button class="mem-tab active" id="mt-0" onclick="switchTab(0)">🔍 Check Membership</button>
+    <button class="mem-tab" id="mt-1" onclick="requestStaffAccess()">🔒 Staff Panel</button>
+  </div>
+
+  <!-- PANEL 0: Customer Check -->
+  <div class="mem-panel active" id="mp-0">
+    <div class="mcard">
+      <div class="mcard-title">Check Your Wash Count</div>
+      <div class="mfield">
+        <label>Vehicle Number</label>
+        <input id="cv" type="text" placeholder="e.g. TN01AB1234" maxlength="15" onkeydown="if(event.key==='Enter') checkMembership()"/>
+      </div>
+      <button class="mbtn mbtn-cyan" id="cbtn" onclick="checkMembership()">Check Membership</button>
+    </div>
+    <div id="cres"></div>
+  </div>
+
+  <!-- PANEL 1: Staff Panel -->
+  <div class="mem-panel" id="mp-1">
+
+    <!-- Staff lock banner -->
+    <div style="display:flex;align-items:center;justify-content:space-between;background:rgba(0,212,255,0.06);border:1px solid rgba(0,212,255,0.15);border-radius:12px;padding:12px 18px;margin-bottom:18px">
+      <div style="display:flex;align-items:center;gap:10px">
+        <span style="font-size:18px">🔓</span>
+        <div>
+          <div style="font-size:13px;font-weight:700;color:var(--cyan)">Staff Panel Unlocked</div>
+          <div style="font-size:11px;color:var(--muted)">Auto-locks after 15 min of inactivity</div>
+        </div>
+      </div>
+      <button onclick="lockStaffPanel()" style="background:rgba(255,82,82,0.1);border:1px solid rgba(255,82,82,0.25);color:#ff5252;font-size:12px;font-weight:700;font-family:inherit;padding:7px 14px;border-radius:50px;cursor:pointer;transition:all 0.2s" onmouseover="this.style.background='rgba(255,82,82,0.2)'" onmouseout="this.style.background='rgba(255,82,82,0.1)'">🔒 Lock</button>
+    </div>
+
+    <!-- Add Wash -->
+    <div class="mcard">
+      <div class="mcard-title">Record a Wash</div>
+      <div class="mfield">
+        <label>Vehicle Number</label>
+        <input id="av" type="text" placeholder="TN01AB1234" maxlength="15" onkeydown="if(event.key==='Enter') addWash()"/>
+      </div>
+      <button class="mbtn mbtn-cyan" id="awbtn" onclick="addWash()">+ Add Wash</button>
+    </div>
+
+    <!-- Register Member -->
+    <div class="mcard">
+      <div class="mcard-title">Register New Customer</div>
+      <div class="mfield">
+        <label>Full Name</label>
+        <input id="an" type="text" placeholder="Customer name" class="normal"/>
+      </div>
+      <div class="mrow2">
+        <div class="mfield">
+          <label>Vehicle Number</label>
+          <input id="anv" type="text" placeholder="TN01AB1234" maxlength="15"/>
+        </div>
+        <div class="mfield">
+          <label>Phone</label>
+          <input id="aph" type="text" placeholder="10-digit" maxlength="10" class="normal"/>
+        </div>
+      </div>
+      <button class="mbtn mbtn-gold" id="arbtn" onclick="registerMember()">Register & Record 1st Wash</button>
+    </div>
+
+    <!-- Member List -->
+    <div class="mcard">
+      <div class="mcard-title" style="margin-bottom:14px">All Members</div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px">
+        <button class="mbtn mbtn-outline" style="width:auto;padding:9px 20px;font-size:12px" onclick="loadMembers()">↻ Refresh List</button>
+        <button class="mbtn mbtn-green"   style="width:auto;padding:9px 20px;font-size:12px" id="exbtn" onclick="exportExcel()">⬇ Export Excel</button>
+      </div>
+      <div id="members-list">
+        <div class="empty-msg"><div class="empty-icon">👥</div>Click "Refresh List" to load members</div>
+      </div>
+    </div>
+
+  </div><!-- /staff panel -->
+
+</div><!-- /mem-wrap -->
+
+<div class="toast" id="toast"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+<!-- PIN LOCK MODAL -->
+<div class="pin-backdrop" id="pin-backdrop">
+  <div class="pin-box">
+    <div class="pin-lock-icon">🔒</div>
+    <div class="pin-title">Staff Access</div>
+    <div class="pin-subtitle">Enter your 4-digit PIN to continue</div>
+
+    <div class="pin-dots" id="pin-dots">
+      <div class="pin-dot" id="pd-0"></div>
+      <div class="pin-dot" id="pd-1"></div>
+      <div class="pin-dot" id="pd-2"></div>
+      <div class="pin-dot" id="pd-3"></div>
+    </div>
+
+    <div class="pin-error-msg" id="pin-error"></div>
+
+    <div class="pin-pad">
+      <button class="pin-key" onclick="pinPress('1')">1</button>
+      <button class="pin-key" onclick="pinPress('2')">2</button>
+      <button class="pin-key" onclick="pinPress('3')">3</button>
+      <button class="pin-key" onclick="pinPress('4')">4</button>
+      <button class="pin-key" onclick="pinPress('5')">5</button>
+      <button class="pin-key" onclick="pinPress('6')">6</button>
+      <button class="pin-key" onclick="pinPress('7')">7</button>
+      <button class="pin-key" onclick="pinPress('8')">8</button>
+      <button class="pin-key" onclick="pinPress('9')">9</button>
+      <button class="pin-key" style="visibility:hidden" disabled></button>
+      <button class="pin-key" onclick="pinPress('0')">0</button>
+      <button class="pin-key del" onclick="pinDelete()">⌫</button>
+    </div>
+
+    <button class="pin-cancel" onclick="closePinModal()">Cancel</button>
+    <div class="pin-attempts" id="pin-attempts"></div>
+  </div>
+</div>
+<script>
+// ════════════════════════════════════════════════
+// TIER CONFIG
+// ════════════════════════════════════════════════
+const TIERS = [
+  { name:"Platinum", min:40, color:"#00d4ff", next:null      },
+  { name:"Gold",     min:20, color:"#f0c040", next:"Platinum" },
+  { name:"Silver",   min:10, color:"#c0c0c0", next:"Gold"     },
+  { name:"Bronze",   min:1,  color:"#cd7f32", next:"Silver"   },
+  { name:"None",     min:0,  color:"#888",    next:"Bronze"   },
+];
+const TIER_MAP = {};
+TIERS.forEach(t => { TIER_MAP[t.name] = t; });
+
+function getTier(total) {
+  return TIERS.find(t => total >= t.min) || TIERS[TIERS.length-1];
+}
+
+function getNextTier(tierName) {
+  return TIER_MAP[tierName]?.next ? TIER_MAP[TIER_MAP[tierName].next] : null;
+}
+
+// ════════════════════════════════════════════════
+// PIN SECURITY
+// ════════════════════════════════════════════════
+// ⚙️  CHANGE THIS PIN in your Code.gs or here:
+const STAFF_PIN        = "1234";   // ← Change to your desired PIN
+const MAX_ATTEMPTS     = 5;
+const LOCKOUT_MINUTES  = 10;
+
+let staffUnlocked  = false;
+let pinBuffer      = "";
+let failedAttempts = 0;
+let lockoutUntil   = 0;
+
+function requestStaffAccess() {
+  // Already unlocked this session — go straight in
+  if (staffUnlocked) { switchTab(1); return; }
+
+  // Lockout check
+  if (Date.now() < lockoutUntil) {
+    const mins = Math.ceil((lockoutUntil - Date.now()) / 60000);
+    showToast('Too many attempts. Wait ' + mins + ' min.', 'err');
+    return;
+  }
+
+  openPinModal();
+}
+
+function openPinModal() {
+  pinBuffer = "";
+  updateDots();
+  document.getElementById('pin-error').textContent   = '';
+  document.getElementById('pin-attempts').textContent = '';
+  document.getElementById('pin-backdrop').classList.add('open');
+  // Auto-focus for physical keyboard support
+  setTimeout(() => document.getElementById('pin-backdrop').focus(), 100);
+}
+
+function closePinModal() {
+  document.getElementById('pin-backdrop').classList.remove('open');
+  pinBuffer = "";
+  updateDots();
+}
+
+function pinPress(digit) {
+  if (pinBuffer.length >= 4) return;
+  pinBuffer += digit;
+  updateDots();
+  if (pinBuffer.length === 4) {
+    setTimeout(verifyPin, 120); // brief pause so last dot animates
+  }
+}
+
+function pinDelete() {
+  pinBuffer = pinBuffer.slice(0, -1);
+  updateDots();
+  document.getElementById('pin-error').textContent = '';
+}
+
+function updateDots() {
+  for (let i = 0; i < 4; i++) {
+    const dot = document.getElementById('pd-' + i);
+    dot.className = 'pin-dot' + (i < pinBuffer.length ? ' filled' : '');
+  }
+}
+
+function verifyPin() {
+  if (pinBuffer === STAFF_PIN) {
+    // SUCCESS
+    setDotsState('success');
+    document.getElementById('pin-error').textContent   = '';
+    document.getElementById('pin-attempts').textContent = '';
+    failedAttempts = 0;
+    staffUnlocked  = true;
+    setTimeout(() => {
+      closePinModal();
+      switchTab(1);
+      // Update tab label to show unlocked
+      document.getElementById('mt-1').textContent = '🔓 Staff Panel';
+      showToast('✓ Staff panel unlocked', 'ok');
+    }, 500);
+  } else {
+    // FAILURE
+    failedAttempts++;
+    setDotsState('error');
+    const remaining = MAX_ATTEMPTS - failedAttempts;
+
+    if (failedAttempts >= MAX_ATTEMPTS) {
+      lockoutUntil = Date.now() + LOCKOUT_MINUTES * 60 * 1000;
+      document.getElementById('pin-error').textContent = '🚫 Too many attempts. Locked for ' + LOCKOUT_MINUTES + ' min.';
+      document.getElementById('pin-attempts').textContent = '';
+      setTimeout(closePinModal, 2000);
+    } else {
+      document.getElementById('pin-error').textContent   = 'Incorrect PIN. Try again.';
+      document.getElementById('pin-attempts').textContent = remaining + ' attempt' + (remaining !== 1 ? 's' : '') + ' remaining';
+    }
+
+    // Shake animation
+    const box = document.querySelector('.pin-box');
+    box.style.animation = 'none';
+    box.offsetHeight; // reflow
+    box.style.animation = 'pinShake 0.4s ease';
+
+    // Reset after delay
+    setTimeout(() => {
+      pinBuffer = "";
+      updateDots();
+    }, 700);
+  }
+}
+
+function setDotsState(state) {
+  for (let i = 0; i < 4; i++) {
+    const dot = document.getElementById('pd-' + i);
+    dot.className = 'pin-dot filled ' + state;
+  }
+}
+
+// Physical keyboard support
+document.addEventListener('keydown', function(e) {
+  if (!document.getElementById('pin-backdrop').classList.contains('open')) return;
+  if (e.key >= '0' && e.key <= '9') pinPress(e.key);
+  else if (e.key === 'Backspace') pinDelete();
+  else if (e.key === 'Escape') closePinModal();
+});
+
+// Lock staff panel after 15 min of inactivity (optional auto-lock)
+let inactivityTimer;
+function resetInactivityTimer() {
+  if (!staffUnlocked) return;
+  clearTimeout(inactivityTimer);
+  inactivityTimer = setTimeout(() => {
+    staffUnlocked = false;
+    document.getElementById('mt-1').textContent = '🔒 Staff Panel';
+    if (document.getElementById('mp-1').classList.contains('active')) {
+      switchTab(0);
+      showToast('Staff panel locked due to inactivity', 'err');
+    }
+  }, 15 * 60 * 1000); // 15 minutes
+}
+document.addEventListener('click',    resetInactivityTimer);
+document.addEventListener('keypress', resetInactivityTimer);
+
+// ════════════════════════════════════════════════
+// TAB SWITCHER
+// ════════════════════════════════════════════════
+function switchTab(n) {
+  [0,1].forEach(i => {
+    document.getElementById('mt-' + i).classList.toggle('active', i === n);
+    document.getElementById('mp-' + i).classList.toggle('active', i === n);
+  });
+}
+
+// ════════════════════════════════════════════════
+// CHECK MEMBERSHIP
+// ════════════════════════════════════════════════
+function checkMembership() {
+  const v = document.getElementById('cv').value.trim();
+  if (!v) { showToast('Please enter a vehicle number', 'err'); return; }
+
+  const btn = document.getElementById('cbtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Checking…';
+
+  google.script.run
+    .withSuccessHandler(function(res) {
+      btn.disabled = false;
+      btn.textContent = 'Check Membership';
+      if (!res.success) { showToast('Error: ' + res.error, 'err'); return; }
+      if (!res.found)   { showToast('Vehicle not registered', 'err'); renderNotFound(); return; }
+      renderMemberResult(res.member, res.history);
+    })
+    .withFailureHandler(function(e) {
+      btn.disabled = false;
+      btn.textContent = 'Check Membership';
+      showToast('Failed to connect. Check your deployment.', 'err');
+    })
+    .checkMembership(v);
+}
+
+function renderNotFound() {
+  document.getElementById('cres').innerHTML = `
+    <div class="result-card" style="border-color:rgba(255,82,82,0.2);text-align:center;padding:36px">
+      <div style="font-size:36px;margin-bottom:12px">🚗</div>
+      <div style="font-size:18px;font-weight:800;margin-bottom:8px">Vehicle Not Found</div>
+      <div style="font-size:13px;color:var(--muted);margin-bottom:20px">This vehicle isn't registered yet. Visit us and ask staff to register you!</div>
+    </div>`;
+}
+
+function renderMemberResult(m, history) {
+  const total      = Number(m['Total Washes']) || 0;
+  const thisMonth  = Number(m['This Month'])   || 0;
+  const tier       = getTier(total);
+  const nextTier   = getNextTier(tier.name);
+  const nextMin    = nextTier ? TIER_MAP[nextTier.name]?.min : null;
+  const washesToNext = nextMin ? (nextMin - total) : 0;
+  const progressPct  = nextMin ? Math.min(100, Math.round((total / nextMin) * 100)) : 100;
+
+  const tierBadgeStyle = `background:${tier.color}22;color:${tier.color};border:1px solid ${tier.color}44`;
+
+  const historyHTML = (history && history.length)
+    ? history.map(h => `
+        <div class="wash-item">
+          <span class="wash-item-num">Wash #${h['Wash #']}</span>
+          <span class="wash-item-date">${String(h['Timestamp']).slice(0,10)}</span>
+          <span class="wash-item-month">Month: ${h['This Month']}</span>
+        </div>`).join('')
+    : '<div style="color:var(--muted);font-size:12px">No wash history yet</div>';
+
+  document.getElementById('cres').innerHTML = `
+    <div class="result-card">
+      <div class="tier-badge" style="${tierBadgeStyle}">
+        ${tier.name === 'Platinum' ? '💎' : tier.name === 'Gold' ? '🥇' : tier.name === 'Silver' ? '🥈' : tier.name === 'Bronze' ? '🥉' : '🚗'}
+        ${tier.name} Member
+      </div>
+
+      <div style="margin-bottom:6px">
+        <span style="font-size:22px;font-weight:900">${m['Name']}</span>
+      </div>
+      <div style="font-size:13px;color:var(--muted);margin-bottom:20px">
+        🚗 ${m['Vehicle No']} &nbsp;·&nbsp; 📞 ${m['Phone']} &nbsp;·&nbsp; Member since ${String(m['Registered On']).slice(0,10)}
+      </div>
+
+      <div class="stat-grid">
+        <div class="stat-box">
+          <div class="stat-box-val" style="color:${tier.color}">${total}</div>
+          <div class="stat-box-label">Total Washes</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-box-val" style="color:var(--gold)">${thisMonth}</div>
+          <div class="stat-box-label">This Month</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-box-val" style="color:var(--muted)">${m['Last Wash'] !== '—' ? String(m['Last Wash']).slice(5) : '—'}</div>
+          <div class="stat-box-label">Last Visit</div>
+        </div>
+      </div>
+
+      ${nextTier ? `
+      <div class="progress-section">
+        <div class="progress-label">
+          <span class="progress-label-left">Progress to ${nextTier.name}</span>
+          <span class="progress-label-right" style="color:${tier.color}">${total} / ${nextMin}</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" style="width:${progressPct}%;background:${tier.color}"></div>
+        </div>
+        <div class="progress-hint">${washesToNext} more wash${washesToNext !== 1 ? 'es' : ''} to unlock ${nextTier.name} 🎯</div>
+      </div>` : `
+      <div class="progress-section">
+        <div class="progress-track">
+          <div class="progress-fill" style="width:100%;background:linear-gradient(90deg,${tier.color},var(--gold))"></div>
+        </div>
+        <div class="progress-hint" style="color:${tier.color};font-weight:700">🏆 Maximum tier achieved!</div>
+      </div>`}
+
+      <div class="wash-history">
+        <div class="wash-history-title">Recent Wash History</div>
+        ${historyHTML}
+      </div>
+    </div>`;
+}
+
+// ════════════════════════════════════════════════
+// ADD WASH (Staff)
+// ════════════════════════════════════════════════
+function addWash() {
+  const v = document.getElementById('av').value.trim();
+  if (!v) { showToast('Enter a vehicle number', 'err'); return; }
+
+  const btn = document.getElementById('awbtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Saving…';
+
+  google.script.run
+    .withSuccessHandler(function(res) {
+      btn.disabled = false;
+      btn.textContent = '+ Add Wash';
+      document.getElementById('av').value = '';
+      if (!res.success) { showToast('❌ ' + res.error, 'err'); return; }
+
+      const tier = getTier(res.total);
+      showToast(`✓ Wash #${res.total} recorded for ${res.name} (${res.vehicle}) — ${tier.name}`, 'ok');
+
+      // Show a quick result pop
+      showWashResult(res);
+    })
+    .withFailureHandler(function() {
+      btn.disabled = false;
+      btn.textContent = '+ Add Wash';
+      showToast('Failed to connect', 'err');
+    })
+    .addWash(v);
+}
+
+function showWashResult(res) {
+  const tier = getTier(res.total);
+  const nextTier  = getNextTier(tier.name);
+  const nextMin   = nextTier ? TIER_MAP[nextTier.name]?.min : null;
+  const washesToNext = nextMin ? nextMin - res.total : 0;
+
+  // Insert a flash result above the Add Wash card
+  const existing = document.getElementById('wash-result-flash');
+  if (existing) existing.remove();
+
+  const div = document.createElement('div');
+  div.id = 'wash-result-flash';
+  div.className = 'result-card';
+  div.style.cssText = `border-color:${tier.color}44;margin-bottom:18px`;
+  div.innerHTML = `
+    <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+      <div style="font-size:36px">✅</div>
+      <div style="flex:1">
+        <div style="font-weight:800;font-size:16px">${res.name} &nbsp;<span style="color:${tier.color};font-size:13px">${tier.name}</span></div>
+        <div style="color:var(--muted);font-size:12px;margin-top:3px">${res.vehicle} &nbsp;·&nbsp; Wash <strong>#${res.total}</strong> recorded · ${res.thisMonth} this month</div>
+        ${nextTier ? `<div style="font-size:11px;color:var(--muted);margin-top:6px">${washesToNext} more to ${nextTier.name} 🎯</div>` : `<div style="font-size:11px;color:${tier.color};margin-top:6px">🏆 Max tier!</div>`}
+      </div>
+    </div>`;
+  document.getElementById('mp-1').insertBefore(div, document.getElementById('mp-1').children[1]);
+  setTimeout(() => { div.style.opacity='0'; div.style.transition='opacity 0.5s'; setTimeout(()=>div.remove(),500); }, 5000);
+}
+
+// ════════════════════════════════════════════════
+// REGISTER MEMBER (Staff)
+// ════════════════════════════════════════════════
+function registerMember() {
+  const name  = document.getElementById('an').value.trim();
+  const veh   = document.getElementById('anv').value.trim();
+  const phone = document.getElementById('aph').value.trim();
+  if (!veh) { showToast('Enter a vehicle number', 'err'); return; }
+
+  const btn = document.getElementById('arbtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Registering…';
+
+  google.script.run
+    .withSuccessHandler(function(res) {
+      btn.disabled = false;
+      btn.textContent = 'Register & Record 1st Wash';
+      if (!res.success) { showToast('❌ ' + res.error, 'err'); return; }
+      document.getElementById('an').value = '';
+      document.getElementById('anv').value = '';
+      document.getElementById('aph').value = '';
+      showToast(`✓ ${res.name} registered! Vehicle: ${res.vehicle} — Wash #1`, 'ok');
+      showWashResult(res);
+    })
+    .withFailureHandler(function() {
+      btn.disabled = false;
+      btn.textContent = 'Register & Record 1st Wash';
+      showToast('Failed to connect', 'err');
+    })
+    .registerMember(name, veh, phone);
+}
+
+// ════════════════════════════════════════════════
+// LOAD MEMBERS LIST
+// ════════════════════════════════════════════════
+function loadMembers() {
+  const container = document.getElementById('members-list');
+  container.innerHTML = '<div style="text-align:center;padding:32px"><div class="spinner"></div></div>';
+
+  google.script.run
+    .withSuccessHandler(function(res) {
+      if (!res.success || !res.rows.length) {
+        container.innerHTML = '<div class="empty-msg"><div class="empty-icon">👥</div>No members yet</div>';
+        return;
+      }
+      const rows = res.rows;
+      container.innerHTML = `
+        <div class="member-table-wrap">
+          <table class="member-table">
+            <thead>
+              <tr>
+                <th>Vehicle</th><th>Name</th><th>Phone</th>
+                <th>Tier</th><th>Total</th><th>This Month</th><th>Last Wash</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${rows.map(r => {
+                const tier = getTier(Number(r['Total Washes'])||0);
+                return `<tr>
+                  <td style="font-weight:700;letter-spacing:1px;font-size:12px">${r['Vehicle No']}</td>
+                  <td>${r['Name']}</td>
+                  <td style="color:var(--muted)">${r['Phone']}</td>
+                  <td><span style="background:${tier.color}22;color:${tier.color};border:1px solid ${tier.color}44;padding:3px 10px;border-radius:50px;font-size:10px;font-weight:700">${tier.name}</span></td>
+                  <td style="font-weight:700;color:${tier.color}">${r['Total Washes']}</td>
+                  <td>${r['This Month']}</td>
+                  <td style="color:var(--muted);font-size:12px">${String(r['Last Wash']).slice(0,10)}</td>
+                </tr>`;
+              }).join('')}
+            </tbody>
+          </table>
+        </div>
+        <div style="margin-top:12px;font-size:11px;color:var(--muted);text-align:right">${rows.length} members total</div>`;
+    })
+    .withFailureHandler(function() {
+      container.innerHTML = '<div class="empty-msg">Failed to load</div>';
+    })
+    .getAllMembers();
+}
+
+// ════════════════════════════════════════════════
+// EXPORT EXCEL
+// ════════════════════════════════════════════════
+function exportExcel() {
+  const btn = document.getElementById('exbtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Preparing…';
+
+  google.script.run
+    .withSuccessHandler(function(res) {
+      btn.disabled = false;
+      btn.textContent = '⬇ Export Excel';
+      if (!res.success || !res.rows.length) { showToast('No data to export', 'err'); return; }
+
+      // Build workbook via SheetJS
+      const wb  = XLSX.utils.book_new();
+      const wsData = [res.headers, ...res.rows];
+      const ws  = XLSX.utils.aoa_to_sheet(wsData);
+      XLSX.utils.book_append_sheet(wb, ws, "Wash Log");
+      XLSX.writeFile(wb, "Shadows_WashLog_" + new Date().toISOString().slice(0,10) + ".xlsx");
+      showToast('✓ Excel downloaded!', 'ok');
+    })
+    .withFailureHandler(function() {
+      btn.disabled = false;
+      btn.textContent = '⬇ Export Excel';
+      showToast('Export failed', 'err');
+    })
+    .getWashLogForExport();
+}
+
+// ════════════════════════════════════════════════
+// TOAST
+// ════════════════════════════════════════════════
+function showToast(msg, type) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className   = 'toast show' + (type ? ' ' + type : '');
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => { t.className = 'toast'; }, 4000);
+}
+</script>
+</body>
+</html>

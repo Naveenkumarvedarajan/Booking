@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Shadow's Detailing — Admin Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet"/>
+<style>
+:root{--dark:#0A0A0A;--dark2:#111;--dark3:#161616;--dark4:#1C1C1C;--border:#222;--text:#F5F5F5;--muted:#888;--gold:#C8A84B;--gold2:#E8C56A;--green:#22C55E;--red:#EF4444;--blue:#60A5FA;--card-radius:16px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Poppins',sans-serif;background:var(--dark);color:var(--text);min-height:100vh}
+
+/* NAV */
+nav{background:var(--dark2);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 32px;height:64px}
+.nav-brand{font-size:15px;font-weight:800;letter-spacing:-0.5px}
+.nav-brand span{color:var(--gold)}
+.nav-badge{font-size:11px;font-weight:600;background:rgba(200,168,75,0.12);color:var(--gold);padding:4px 12px;border-radius:50px;border:1px solid rgba(200,168,75,0.2)}
+.nav-back{font-size:12px;font-weight:600;color:var(--muted);text-decoration:none;display:flex;align-items:center;gap:6px;transition:color 0.2s}
+.nav-back:hover{color:var(--text)}
+
+/* MAIN LAYOUT */
+.dash{padding:32px}
+
+/* STATS ROW */
+.stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-bottom:32px}
+.stat-card{background:var(--dark2);border:1px solid var(--border);border-radius:14px;padding:20px 22px}
+.stat-label{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:8px}
+.stat-val{font-size:28px;font-weight:900;font-family:'Playfair Display',serif;line-height:1}
+.stat-sub{font-size:11px;color:var(--muted);margin-top:6px}
+
+/* FILTERS */
+.toolbar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:20px}
+.search-input{background:var(--dark3);border:1px solid var(--border);border-radius:10px;padding:10px 16px;color:var(--text);font-family:inherit;font-size:13px;outline:none;width:260px;transition:border-color 0.2s}
+.search-input:focus{border-color:#444}
+.search-input::placeholder{color:var(--muted)}
+.filter-select{background:var(--dark3);border:1px solid var(--border);border-radius:10px;padding:10px 14px;color:var(--text);font-family:inherit;font-size:13px;outline:none;cursor:pointer}
+.filter-select option{background:var(--dark3)}
+.btn-refresh{background:var(--dark3);border:1px solid var(--border);color:var(--muted);padding:10px 16px;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;transition:all 0.2s}
+.btn-refresh:hover{border-color:#444;color:var(--text)}
+.count-badge{margin-left:auto;font-size:12px;color:var(--muted)}
+
+/* TABLE */
+.table-wrap{background:var(--dark2);border:1px solid var(--border);border-radius:14px;overflow:hidden}
+.bookings-table{width:100%;border-collapse:collapse;font-size:13px}
+.bookings-table th{background:var(--dark3);padding:12px 16px;text-align:left;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;white-space:nowrap;border-bottom:1px solid var(--border)}
+.bookings-table td{padding:13px 16px;border-bottom:1px solid rgba(255,255,255,0.04);vertical-align:middle}
+.bookings-table tr:last-child td{border-bottom:none}
+.bookings-table tr:hover td{background:rgba(255,255,255,0.02)}
+
+/* Status badges */
+.status-badge{display:inline-block;font-size:10px;font-weight:700;padding:4px 10px;border-radius:50px;letter-spacing:0.5px}
+.pay-badge{display:inline-block;font-size:10px;font-weight:700;padding:4px 10px;border-radius:50px;letter-spacing:0.5px}
+
+/* Action buttons */
+.action-btn{background:none;border:none;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;padding:5px 10px;border-radius:6px;transition:all 0.15s}
+.action-btn:hover{opacity:0.7}
+
+/* Inline selects */
+.inline-select{background:transparent;border:none;font-family:inherit;font-size:12px;cursor:pointer;outline:none;padding:4px 8px;border-radius:6px;border:1px solid transparent;transition:border-color 0.2s}
+.inline-select:hover{border-color:var(--border)}
+
+/* Empty state */
+.empty-state{text-align:center;padding:64px 20px;color:var(--muted)}
+.empty-icon{font-size:48px;margin-bottom:16px}
+.empty-title{font-size:18px;font-weight:700;color:var(--text);margin-bottom:8px}
+.empty-sub{font-size:13px}
+
+/* Loading */
+.loading-wrap{text-align:center;padding:64px 20px}
+.spinner{display:inline-block;width:32px;height:32px;border:3px solid rgba(200,168,75,0.2);border-top-color:var(--gold);border-radius:50%;animation:spin 0.7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-text{margin-top:16px;color:var(--muted);font-size:13px}
+
+/* Toast */
+.toast{position:fixed;bottom:32px;left:50%;transform:translateX(-50%) translateY(20px);background:#1A1A1A;border:1px solid #333;color:var(--text);padding:14px 24px;border-radius:50px;font-size:14px;font-weight:600;opacity:0;transition:all 0.35s;pointer-events:none;z-index:999;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.success{border-color:var(--green);color:var(--green)}
+.toast.error{border-color:var(--red);color:var(--red)}
+
+/* Summary Chart */
+.charts-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:32px}
+.chart-card{background:var(--dark2);border:1px solid var(--border);border-radius:14px;padding:20px}
+.chart-title{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:16px}
+.bar-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.bar-label{font-size:11px;color:var(--muted);width:130px;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bar-track{flex:1;height:8px;background:var(--dark3);border-radius:50px;overflow:hidden}
+.bar-fill{height:100%;border-radius:50px;background:var(--gold);transition:width 0.6s ease}
+.bar-count{font-size:11px;font-weight:700;color:var(--muted);width:24px;text-align:right}
+
+@media(max-width:900px){
+  .charts-row{grid-template-columns:1fr}
+  .dash{padding:20px}
+  .stats-row{grid-template-columns:repeat(2,1fr)}
+  .bookings-table th:nth-child(n+5),.bookings-table td:nth-child(n+5){display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div style="display:flex;align-items:center;gap:14px">
+    <div class="nav-brand">SHADOW'S <span>DETAILING</span></div>
+    <div class="nav-badge">Admin Dashboard</div>
+  </div>
+  <a class="nav-back" href="?page=index">← Back to Services</a>
+</nav>
+
+<div class="dash">
+
+  <!-- STATS -->
+  <div class="stats-row" id="stats-row">
+    <div class="stat-card">
+      <div class="stat-label">Total Bookings</div>
+      <div class="stat-val" id="st-total" style="color:var(--gold)">—</div>
+      <div class="stat-sub">All time</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Revenue Collected</div>
+      <div class="stat-val" id="st-revenue" style="color:var(--green)">—</div>
+      <div class="stat-sub">Paid bookings only</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Pending Payment</div>
+      <div class="stat-val" id="st-pending" style="color:#FB923C">—</div>
+      <div class="stat-sub">Awaiting collection</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Today's Bookings</div>
+      <div class="stat-val" id="st-today" style="color:var(--blue)">—</div>
+      <div class="stat-sub" id="st-today-date">—</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Completed Jobs</div>
+      <div class="stat-val" id="st-completed" style="color:var(--green)">—</div>
+      <div class="stat-sub">Status: Completed</div>
+    </div>
+  </div>
+
+  <!-- CHARTS -->
+  <div class="charts-row" id="charts-row" style="display:none">
+    <div class="chart-card">
+      <div class="chart-title">Bookings by Service</div>
+      <div id="chart-service"></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Bookings by Car Type</div>
+      <div id="chart-cartype"></div>
+    </div>
+  </div>
+
+  <!-- TOOLBAR -->
+  <div class="toolbar">
+    <input class="search-input" id="search-input" placeholder="🔍  Search name, phone, ref, car…" oninput="filterTable()"/>
+    <select class="filter-select" id="filter-status" onchange="filterTable()">
+      <option value="">All Status</option>
+      <option>Confirmed</option>
+      <option>Completed</option>
+      <option>Cancelled</option>
+    </select>
+    <select class="filter-select" id="filter-pay" onchange="filterTable()">
+      <option value="">All Payments</option>
+      <option>Pending</option>
+      <option>Paid — Cash</option>
+      <option>Paid — UPI</option>
+      <option>Paid — Card</option>
+      <option>Partial</option>
+    </select>
+    <button class="btn-refresh" onclick="loadData()">↻ Refresh</button>
+    <div class="count-badge" id="count-badge"></div>
+  </div>
+
+  <!-- TABLE -->
+  <div class="table-wrap">
+    <div class="loading-wrap" id="loading-wrap">
+      <div class="spinner"></div>
+      <div class="loading-text">Loading bookings from Google Sheets…</div>
+    </div>
+
+    <div id="table-container" style="display:none">
+      <table class="bookings-table" id="bookings-table">
+        <thead>
+          <tr>
+            <th>Ref</th>
+            <th>Date/Time</th>
+            <th>Customer</th>
+            <th>Car</th>
+            <th>Service</th>
+            <th>Price</th>
+            <th>Payment</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="table-body"></tbody>
+      </table>
+      <div class="empty-state" id="empty-state" style="display:none">
+        <div class="empty-icon">📋</div>
+        <div class="empty-title">No bookings found</div>
+        <div class="empty-sub">Try changing the filters or refresh the page</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ════════════════════════════════════════════════
+// PAYMENT STATUS STYLES
+// ════════════════════════════════════════════════
+const PAY_STYLES = {
+  "Pending":      { bg:"rgba(251,146,60,0.12)",  color:"#FB923C", border:"rgba(251,146,60,0.3)"  },
+  "Paid — Cash":  { bg:"rgba(34,197,94,0.12)",   color:"#22C55E", border:"rgba(34,197,94,0.3)"   },
+  "Paid — UPI":   { bg:"rgba(96,165,250,0.12)",  color:"#60A5FA", border:"rgba(96,165,250,0.3)"  },
+  "Paid — Card":  { bg:"rgba(192,132,252,0.12)", color:"#C084FC", border:"rgba(192,132,252,0.3)" },
+  "Partial":      { bg:"rgba(251,191,36,0.12)",  color:"#FBBF24", border:"rgba(251,191,36,0.3)"  },
+};
+const STATUS_STYLES = {
+  "Confirmed":  { bg:"rgba(96,165,250,0.12)",  color:"#60A5FA" },
+  "Completed":  { bg:"rgba(34,197,94,0.12)",   color:"#22C55E" },
+  "Cancelled":  { bg:"rgba(239,68,68,0.12)",   color:"#EF4444" },
+};
+
+let allRows = [];
+
+// ════════════════════════════════════════════════
+// LOAD DATA
+// ════════════════════════════════════════════════
+function loadData() {
+  document.getElementById('loading-wrap').style.display = 'block';
+  document.getElementById('table-container').style.display = 'none';
+
+  google.script.run
+    .withSuccessHandler(function(result) {
+      document.getElementById('loading-wrap').style.display = 'none';
+      document.getElementById('table-container').style.display = 'block';
+      if (result && result.success) {
+        allRows = result.rows || [];
+        filterTable();
+      } else {
+        showToast('Error loading data', 'error');
+      }
+    })
+    .withFailureHandler(function(err) {
+      document.getElementById('loading-wrap').style.display = 'none';
+      document.getElementById('table-container').style.display = 'block';
+      showToast('Failed to load bookings', 'error');
+      console.error(err);
+    })
+    .getBookings();
+
+  // Load stats
+  google.script.run
+    .withSuccessHandler(function(s) {
+      if (!s || !s.success) return;
+      document.getElementById('st-total').textContent     = s.total;
+      document.getElementById('st-revenue').textContent   = '₹' + Number(s.totalRevenue).toLocaleString('en-IN');
+      document.getElementById('st-pending').textContent   = s.pendingCount;
+      document.getElementById('st-today').textContent     = s.todayCount;
+      document.getElementById('st-completed').textContent = s.completedCount;
+      document.getElementById('st-today-date').textContent = new Date().toLocaleDateString('en-IN', {weekday:'long', day:'numeric', month:'short'});
+
+      // Build bar charts
+      buildBarChart('chart-service',  s.byService,  s.total);
+      buildBarChart('chart-cartype',  s.byCarType,  s.total);
+      document.getElementById('charts-row').style.display = 'grid';
+    })
+    .withFailureHandler(function(){})
+    .getDashboardStats();
+}
+
+// ════════════════════════════════════════════════
+// FILTER TABLE
+// ════════════════════════════════════════════════
+function filterTable() {
+  const query  = document.getElementById('search-input').value.toLowerCase().trim();
+  const status = document.getElementById('filter-status').value;
+  const pay    = document.getElementById('filter-pay').value;
+
+  const filtered = allRows.filter(r => {
+    const matchQ = !query || [r['Ref'], r['Customer Name'], r['Phone'], r['Car Model'], r['Reg Plate'], r['Service']]
+      .some(v => String(v || '').toLowerCase().includes(query));
+    const matchS = !status || r['Status'] === status;
+    const matchP = !pay    || r['Payment Status'] === pay;
+    return matchQ && matchS && matchP;
+  });
+
+  renderTable(filtered);
+  document.getElementById('count-badge').textContent = filtered.length + ' of ' + allRows.length + ' bookings';
+}
+
+// ════════════════════════════════════════════════
+// RENDER TABLE
+// ════════════════════════════════════════════════
+function renderTable(rows) {
+  const tbody  = document.getElementById('table-body');
+  const empty  = document.getElementById('empty-state');
+  tbody.innerHTML = '';
+
+  if (!rows.length) {
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+
+  rows.forEach(r => {
+    const ref     = r['Ref'] || '—';
+    const ts      = r['Timestamp'] ? String(r['Timestamp']).slice(0,16) : '—';
+    const name    = r['Customer Name'] || '—';
+    const phone   = r['Phone'] || '—';
+    const carInfo = (r['Car Model'] || '—') + ' · ' + (r['Reg Plate'] || '—');
+    const carType = r['Car Type'] || '—';
+    const svc     = r['Service'] || '—';
+    const price   = Number(r['Price (₹)'] || 0).toLocaleString('en-IN');
+    const pay     = r['Payment Status'] || 'Pending';
+    const status  = r['Status'] || 'Confirmed';
+    const apptDate= r['Date'] || '—';
+    const apptTime= r['Time'] || '—';
+
+    const ps  = PAY_STYLES[pay]    || PAY_STYLES['Pending'];
+    const ss  = STATUS_STYLES[status] || STATUS_STYLES['Confirmed'];
+
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>
+        <div style="font-weight:700;font-size:12px;color:var(--gold);letter-spacing:1px">${ref}</div>
+        <div style="font-size:10px;color:var(--muted);margin-top:2px">${ts}</div>
+      </td>
+      <td>
+        <div style="font-weight:600;font-size:12px">${apptDate}</div>
+        <div style="font-size:11px;color:var(--muted)">${apptTime}</div>
+      </td>
+      <td>
+        <div style="font-weight:600">${name}</div>
+        <div style="font-size:11px;color:var(--muted)">${phone}</div>
+      </td>
+      <td>
+        <div style="font-size:12px">${carInfo}</div>
+        <div style="font-size:10px;color:var(--muted);margin-top:2px">${carType}</div>
+      </td>
+      <td style="max-width:180px">
+        <div style="font-size:12px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${svc}</div>
+      </td>
+      <td>
+        <div style="font-weight:700;font-family:'Playfair Display',serif;color:var(--gold)">₹${price}</div>
+      </td>
+      <td>
+        <select class="inline-select" onchange="updatePayment('${ref}', this.value)"
+          style="background:${ps.bg};color:${ps.color};border-color:${ps.border}">
+          ${['Pending','Paid — Cash','Paid — UPI','Paid — Card','Partial'].map(o =>
+            `<option value="${o}" ${o === pay ? 'selected' : ''}>${o}</option>`
+          ).join('')}
+        </select>
+      </td>
+      <td>
+        <select class="inline-select" onchange="updateStatus('${ref}', this.value)"
+          style="background:${ss.bg};color:${ss.color}">
+          ${['Confirmed','Completed','Cancelled'].map(o =>
+            `<option value="${o}" ${o === status ? 'selected' : ''}>${o}</option>`
+          ).join('')}
+        </select>
+      </td>
+      <td>
+        <button class="action-btn" style="color:var(--red)" onclick="deleteRow('${ref}', this)">🗑 Delete</button>
+      </td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+// ════════════════════════════════════════════════
+// ACTIONS
+// ════════════════════════════════════════════════
+function updatePayment(ref, status) {
+  google.script.run
+    .withSuccessHandler(r => {
+      if (r && r.success) {
+        showToast('✓ Payment updated: ' + status, 'success');
+        const row = allRows.find(x => x['Ref'] === ref);
+        if (row) row['Payment Status'] = status;
+        loadData(); // refresh stats
+      } else {
+        showToast('Error updating payment', 'error');
+      }
+    })
+    .withFailureHandler(() => showToast('Failed to update payment', 'error'))
+    .updatePaymentStatus(ref, status);
+}
+
+function updateStatus(ref, status) {
+  google.script.run
+    .withSuccessHandler(r => {
+      if (r && r.success) {
+        showToast('✓ Status updated: ' + status, 'success');
+        const row = allRows.find(x => x['Ref'] === ref);
+        if (row) row['Status'] = status;
+        loadData();
+      } else {
+        showToast('Error updating status', 'error');
+      }
+    })
+    .withFailureHandler(() => showToast('Failed to update status', 'error'))
+    .updateBookingStatus(ref, status);
+}
+
+function deleteRow(ref, btn) {
+  if (!confirm('Delete booking ' + ref + '? This cannot be undone.')) return;
+  btn.textContent = '…';
+  btn.disabled = true;
+  google.script.run
+    .withSuccessHandler(r => {
+      if (r && r.success) {
+        showToast('Booking ' + ref + ' deleted', 'success');
+        allRows = allRows.filter(x => x['Ref'] !== ref);
+        filterTable();
+      } else {
+        showToast('Error deleting booking', 'error');
+        btn.textContent = '🗑 Delete';
+        btn.disabled = false;
+      }
+    })
+    .withFailureHandler(() => {
+      showToast('Failed to delete', 'error');
+      btn.textContent = '🗑 Delete';
+      btn.disabled = false;
+    })
+    .deleteBooking(ref);
+}
+
+// ════════════════════════════════════════════════
+// BAR CHARTS
+// ════════════════════════════════════════════════
+function buildBarChart(containerId, data, total) {
+  const container = document.getElementById(containerId);
+  container.innerHTML = '';
+  const sorted = Object.entries(data).sort((a,b) => b[1]-a[1]).slice(0,6);
+  const max = sorted.length ? sorted[0][1] : 1;
+  sorted.forEach(([label, count]) => {
+    const pct = Math.round((count / max) * 100);
+    const div = document.createElement('div');
+    div.className = 'bar-row';
+    div.innerHTML = `
+      <div class="bar-label" title="${label}">${label}</div>
+      <div class="bar-track"><div class="bar-fill" style="width:${pct}%"></div></div>
+      <div class="bar-count">${count}</div>`;
+    container.appendChild(div);
+  });
+  if (!sorted.length) container.innerHTML = '<div style="color:var(--muted);font-size:12px">No data yet</div>';
+}
+
+// Toast
+function showToast(msg, type) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show' + (type ? ' ' + type : '');
+  setTimeout(() => t.className = 'toast', 3000);
+}
+
+// ════════════════════════════════════════════════
+// INIT
+// ════════════════════════════════════════════════
+loadData();
+</script>
+</body>
+</html>
