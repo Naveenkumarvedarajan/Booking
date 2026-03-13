@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Shadow's Detailing — Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet"/>
+<style>
+:root{--dark:#0A0A0A;--dark2:#111;--dark3:#161616;--dark4:#1C1C1C;--border:#222;--text:#F5F5F5;--muted:#888;--gold:#C8A84B;--gold2:#E8C56A;--green:#22C55E;--red:#EF4444;--blue:#60A5FA;--orange:#FB923C;--card-radius:14px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Poppins',sans-serif;background:var(--dark);color:var(--text);min-height:100vh}
+nav{background:var(--dark2);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 32px;height:64px}
+.nav-brand{font-size:15px;font-weight:800;letter-spacing:-0.5px}
+.nav-brand span{color:var(--gold)}
+.nav-badge{font-size:11px;font-weight:600;background:rgba(200,168,75,0.12);color:var(--gold);padding:4px 12px;border-radius:50px;border:1px solid rgba(200,168,75,0.2)}
+.nav-back{font-size:12px;font-weight:600;color:var(--muted);text-decoration:none;transition:color 0.2s}
+.nav-back:hover{color:var(--text)}
+.dash{padding:28px 32px}
+.stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:28px}
+.stat-card{background:var(--dark2);border:1px solid var(--border);border-radius:var(--card-radius);padding:18px 20px}
+.stat-card.link{cursor:pointer;transition:border-color 0.2s}
+.stat-card.link:hover{border-color:#444}
+.stat-label{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:8px}
+.stat-val{font-size:26px;font-weight:900;font-family:'Playfair Display',serif;line-height:1}
+.stat-sub{font-size:11px;color:var(--muted);margin-top:6px}
+.charts-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin-bottom:28px}
+.chart-card{background:var(--dark2);border:1px solid var(--border);border-radius:var(--card-radius);padding:20px}
+.chart-title{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:16px}
+.bar-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.bar-label{font-size:11px;color:var(--muted);width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex-shrink:0}
+.bar-track{flex:1;height:8px;background:var(--dark3);border-radius:50px;overflow:hidden}
+.bar-fill{height:100%;border-radius:50px;background:var(--gold);transition:width 0.7s ease}
+.bar-count{font-size:11px;font-weight:700;color:var(--muted);min-width:22px;text-align:right}
+.toolbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:16px}
+.search-box{background:var(--dark3);border:1px solid var(--border);border-radius:10px;padding:10px 14px;color:var(--text);font-family:inherit;font-size:13px;outline:none;width:240px;transition:border-color 0.2s}
+.search-box:focus{border-color:#444}
+.search-box::placeholder{color:var(--muted)}
+.fsel{background:var(--dark3);border:1px solid var(--border);border-radius:10px;padding:10px 12px;color:var(--text);font-family:inherit;font-size:13px;outline:none;cursor:pointer}
+.fsel option{background:var(--dark3)}
+.btn-sm{background:var(--dark3);border:1px solid var(--border);color:var(--muted);padding:10px 14px;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;transition:all 0.2s}
+.btn-sm:hover{border-color:#444;color:var(--text)}
+.count-lbl{margin-left:auto;font-size:12px;color:var(--muted)}
+.tbl-wrap{background:var(--dark2);border:1px solid var(--border);border-radius:var(--card-radius);overflow:hidden;overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px;min-width:880px}
+th{background:var(--dark3);padding:11px 14px;text-align:left;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;white-space:nowrap;border-bottom:1px solid var(--border)}
+td{padding:12px 14px;border-bottom:1px solid rgba(255,255,255,0.04);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(255,255,255,0.02)}
+.isel{border-radius:8px;border:1px solid;padding:5px 8px;font-family:inherit;font-size:11px;font-weight:700;cursor:pointer;outline:none;max-width:128px}
+.loading-box{text-align:center;padding:60px;color:var(--muted)}
+.spin{display:inline-block;width:20px;height:20px;border:2px solid rgba(200,168,75,0.2);border-top-color:var(--gold);border-radius:50%;animation:sp 0.8s linear infinite;margin-bottom:12px}
+@keyframes sp{to{transform:rotate(360deg)}}
+.empty-box{text-align:center;padding:60px;color:var(--muted)}
+.del-btn{background:transparent;border:1px solid rgba(239,68,68,0.25);color:var(--red);padding:5px 10px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;transition:all 0.2s}
+.del-btn:hover{background:rgba(239,68,68,0.1)}
+/* custom confirm dialog */
+.cdialog{display:none;position:fixed;inset:0;z-index:500;background:rgba(0,0,0,0.82);align-items:center;justify-content:center;padding:20px}
+.cdialog.open{display:flex}
+.cbox{background:var(--dark2);border:1px solid var(--border);border-radius:18px;padding:32px;max-width:340px;width:100%;text-align:center}
+.cbox h3{font-size:17px;font-weight:800;margin-bottom:8px}
+.cbox p{font-size:13px;color:var(--muted);margin-bottom:24px;line-height:1.6}
+.cbtns{display:flex;gap:10px;justify-content:center}
+.cbtns button{padding:11px 22px;border-radius:50px;border:none;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;transition:all 0.2s}
+.btn-no{background:var(--dark3);color:var(--muted);border:1px solid var(--border)}
+.btn-no:hover{color:var(--text)}
+.btn-yes{background:rgba(239,68,68,0.12);color:var(--red);border:1px solid rgba(239,68,68,0.3)}
+.btn-yes:hover{background:rgba(239,68,68,0.22)}
+/* toast */
+.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--dark2);border:1px solid var(--border);border-radius:50px;padding:12px 24px;font-size:13px;font-weight:600;opacity:0;transition:all 0.3s;pointer-events:none;z-index:9999;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.ok{border-color:rgba(34,197,94,0.4);color:var(--green)}
+.toast.err{border-color:rgba(239,68,68,0.4);color:var(--red)}
+@media(max-width:700px){.dash{padding:16px}nav{padding:0 16px}.stats-row{grid-template-columns:1fr 1fr}.search-box{width:100%}}
+</style>
+</head>
+<body>
+
+<nav>
+  <div style="display:flex;align-items:center;gap:12px">
+    <div class="nav-brand">SHADOW'S <span>DETAILING</span></div>
+    <div class="nav-badge">Admin Dashboard</div>
+  </div>
+  <div style="display:flex;gap:16px;align-items:center">
+    <a class="nav-back" href="?page=membership">&#127885; Membership</a>
+    <a class="nav-back" href="?page=index">&#8592; Services</a>
+  </div>
+</nav>
+
+<div class="dash">
+
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-label">Total Bookings</div>
+      <div class="stat-val" id="st-total" style="color:var(--gold)">&#8212;</div>
+      <div class="stat-sub">All time</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Revenue Collected</div>
+      <div class="stat-val" id="st-revenue" style="color:var(--green)">&#8212;</div>
+      <div class="stat-sub">Paid bookings only</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Pending Payment</div>
+      <div class="stat-val" id="st-pending" style="color:var(--orange)">&#8212;</div>
+      <div class="stat-sub">Awaiting collection</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Today's Bookings</div>
+      <div class="stat-val" id="st-today" style="color:var(--blue)">&#8212;</div>
+      <div class="stat-sub" id="st-today-date">&#8212;</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Completed Jobs</div>
+      <div class="stat-val" id="st-completed" style="color:var(--green)">&#8212;</div>
+      <div class="stat-sub">Status: Completed</div>
+    </div>
+    <div class="stat-card link" onclick="window.open('?page=membership','_blank')">
+      <div class="stat-label">Members</div>
+      <div class="stat-val" id="st-members" style="color:#00d4ff">&#8212;</div>
+      <div class="stat-sub" id="st-members-sub">&#8594; Open portal</div>
+    </div>
+  </div>
+
+  <div class="charts-row" id="charts-row" style="display:none">
+    <div class="chart-card">
+      <div class="chart-title">Bookings by Service</div>
+      <div id="chart-service"></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Bookings by Car Type</div>
+      <div id="chart-cartype"></div>
+    </div>
+    <div class="chart-card" id="chart-tier-wrap" style="display:none">
+      <div class="chart-title">Members by Tier</div>
+      <div id="chart-tier"></div>
+    </div>
+  </div>
+
+  <div class="toolbar">
+    <input class="search-box" id="search-box" type="text" placeholder="Search name, ref, phone, service…" oninput="filterTable()"/>
+    <select class="fsel" id="fsel-status" onchange="filterTable()">
+      <option value="">All Status</option>
+      <option>Confirmed</option><option>Completed</option><option>Cancelled</option>
+    </select>
+    <select class="fsel" id="fsel-pay" onchange="filterTable()">
+      <option value="">All Payments</option>
+      <option>Pending</option><option>Paid &#8212; Cash</option><option>Paid &#8212; UPI</option><option>Paid &#8212; Card</option><option>Partial</option>
+    </select>
+    <button class="btn-sm" onclick="loadData()">&#8635; Refresh</button>
+    <span class="count-lbl" id="count-lbl"></span>
+  </div>
+
+  <div class="tbl-wrap">
+    <div class="loading-box" id="loading-box">
+      <div class="spin"></div><div>Loading bookings…</div>
+    </div>
+    <div id="tbl-area" style="display:none">
+      <table>
+        <thead>
+          <tr>
+            <th>Ref / Time</th><th>Appointment</th><th>Customer</th>
+            <th>Car</th><th>Service</th><th>Price</th>
+            <th>Payment</th><th>Status</th><th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+      <div class="empty-box" id="empty-box" style="display:none">
+        <div style="font-size:36px;margin-bottom:8px">&#128203;</div>
+        No bookings found
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Custom confirm dialog - replaces confirm() which is blocked in Apps Script -->
+<div class="cdialog" id="cdialog">
+  <div class="cbox">
+    <h3>Delete Booking?</h3>
+    <p id="cdialog-msg"></p>
+    <div class="cbtns">
+      <button class="btn-no" onclick="closeDialog()">Cancel</button>
+      <button class="btn-yes" onclick="doDelete()">Yes, Delete</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+var PAY_STYLES = {
+  "Pending":      {bg:"rgba(251,146,60,0.12)", color:"#FB923C", bdr:"rgba(251,146,60,0.3)"},
+  "Paid - Cash":  {bg:"rgba(34,197,94,0.12)",  color:"#22C55E", bdr:"rgba(34,197,94,0.3)"},
+  "Paid - UPI":   {bg:"rgba(96,165,250,0.12)", color:"#60A5FA", bdr:"rgba(96,165,250,0.3)"},
+  "Paid - Card":  {bg:"rgba(192,132,252,0.12)",color:"#C084FC", bdr:"rgba(192,132,252,0.3)"},
+  "Partial":      {bg:"rgba(251,191,36,0.12)", color:"#FBBF24", bdr:"rgba(251,191,36,0.3)"}
+};
+var STATUS_STYLES = {
+  "Confirmed": {bg:"rgba(96,165,250,0.12)", color:"#60A5FA"},
+  "Completed": {bg:"rgba(34,197,94,0.12)",  color:"#22C55E"},
+  "Cancelled": {bg:"rgba(239,68,68,0.12)",  color:"#EF4444"}
+};
+var allRows = [];
+var pendingRef = null;
+var pendingBtn = null;
+
+function loadData() {
+  document.getElementById('loading-box').style.display = 'block';
+  document.getElementById('tbl-area').style.display    = 'none';
+
+  google.script.run
+    .withSuccessHandler(function(result) {
+      document.getElementById('loading-box').style.display = 'none';
+      document.getElementById('tbl-area').style.display    = 'block';
+      if (result && result.success) {
+        allRows = result.rows || [];
+        filterTable();
+      } else {
+        showToast('Error loading bookings', 'err');
+      }
+    })
+    .withFailureHandler(function() {
+      document.getElementById('loading-box').style.display = 'none';
+      document.getElementById('tbl-area').style.display    = 'block';
+      showToast('Failed to load. Check deployment.', 'err');
+    })
+    .getBookings();
+
+  google.script.run
+    .withSuccessHandler(function(s) {
+      if (!s || !s.success) return;
+      document.getElementById('st-total').textContent     = s.total;
+      document.getElementById('st-revenue').textContent   = '\u20B9' + Number(s.totalRevenue).toLocaleString('en-IN');
+      document.getElementById('st-pending').textContent   = s.pendingCount;
+      document.getElementById('st-today').textContent     = s.todayCount;
+      document.getElementById('st-completed').textContent = s.completedCount;
+      document.getElementById('st-today-date').textContent = new Date().toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'short'});
+
+      if (s.memberStats) {
+        var ms = s.memberStats;
+        var byT = ms.byTier || {};
+        document.getElementById('st-members').textContent = ms.total || 0;
+        var parts = [];
+        ['Platinum','Gold','Silver','Bronze'].forEach(function(t) {
+          if (byT[t]) parts.push(byT[t] + ' ' + t);
+        });
+        if (parts.length) document.getElementById('st-members-sub').textContent = parts.join(' \u00B7 ');
+        if (ms.total > 0) {
+          var TC = {Platinum:'#00d4ff',Gold:'#f0c040',Silver:'#c0c0c0',Bronze:'#cd7f32',None:'#888'};
+          var td = {};
+          ['Platinum','Gold','Silver','Bronze','None'].forEach(function(t){ if(byT[t]) td[t]=byT[t]; });
+          buildBarChartColored('chart-tier', td, ms.total, TC);
+          document.getElementById('chart-tier-wrap').style.display = 'block';
+        }
+      }
+      buildBarChart('chart-service', s.byService || {}, s.total);
+      buildBarChart('chart-cartype', s.byCarType || {}, s.total);
+      document.getElementById('charts-row').style.display = 'grid';
+    })
+    .withFailureHandler(function(){})
+    .getDashboardStats();
+}
+
+function filterTable() {
+  var q  = (document.getElementById('search-box').value || '').toLowerCase();
+  var fs = document.getElementById('fsel-status').value;
+  var fp = document.getElementById('fsel-pay').value;
+
+  var filtered = [];
+  for (var i = 0; i < allRows.length; i++) {
+    var r = allRows[i];
+    var matchQ = !q;
+    if (!matchQ) {
+      var fields = ['Ref','Customer Name','Phone','Car Model','Reg Plate','Service'];
+      for (var j = 0; j < fields.length; j++) {
+        if (String(r[fields[j]] || '').toLowerCase().indexOf(q) !== -1) { matchQ = true; break; }
+      }
+    }
+    var matchS = !fs || r['Status'] === fs;
+    var matchP = !fp || r['Payment Status'] === fp;
+    if (matchQ && matchS && matchP) filtered.push(r);
+  }
+
+  renderTable(filtered);
+  document.getElementById('count-lbl').textContent = filtered.length + ' of ' + allRows.length + ' bookings';
+}
+
+function renderTable(rows) {
+  var tbody = document.getElementById('tbody');
+  var empty = document.getElementById('empty-box');
+  tbody.innerHTML = '';
+
+  if (!rows.length) { empty.style.display = 'block'; return; }
+  empty.style.display = 'none';
+
+  rows.forEach(function(r) {
+    var ref     = r['Ref']             || '&#8212;';
+    var ts      = String(r['Timestamp'] || '').slice(0,16);
+    var name    = r['Customer Name']   || '&#8212;';
+    var phone   = r['Phone']           || '&#8212;';
+    var carInfo = (r['Car Model']||'&#8212;') + ' \u00B7 ' + (r['Reg Plate']||'&#8212;');
+    var carType = r['Car Type']        || '';
+    var svc     = r['Service']         || '&#8212;';
+    var price   = Number(r['Price (\u20B9)'] || r['Price (?)'] || 0).toLocaleString('en-IN');
+    var pay     = r['Payment Status']  || 'Pending';
+    var status  = r['Status']          || 'Confirmed';
+    var aDate   = r['Date']            || '&#8212;';
+    var aTime   = r['Time']            || '&#8212;';
+
+    var ps = PAY_STYLES[pay]    || PAY_STYLES['Pending'];
+    var ss = STATUS_STYLES[status] || STATUS_STYLES['Confirmed'];
+
+    var payOpts    = '';
+    var statusOpts = '';
+    ['Pending','Paid - Cash','Paid - UPI','Paid - Card','Partial'].forEach(function(o){
+      payOpts += '<option value="'+o+'"'+(o===pay?' selected':'')+'>'+o+'</option>';
+    });
+    ['Confirmed','Completed','Cancelled'].forEach(function(o){
+      statusOpts += '<option value="'+o+'"'+(o===status?' selected':'')+'>'+o+'</option>';
+    });
+
+    var tr = document.createElement('tr');
+    tr.innerHTML =
+      '<td><div style="font-weight:700;font-size:12px;color:var(--gold);letter-spacing:1px">'+ref+'</div><div style="font-size:10px;color:var(--muted);margin-top:2px">'+ts+'</div></td>'+
+      '<td><div style="font-weight:600;font-size:12px">'+aDate+'</div><div style="font-size:11px;color:var(--muted)">'+aTime+'</div></td>'+
+      '<td><div style="font-weight:600">'+name+'</div><div style="font-size:11px;color:var(--muted)">'+phone+'</div></td>'+
+      '<td><div style="font-size:12px">'+carInfo+'</div><div style="font-size:10px;color:var(--muted);margin-top:2px">'+carType+'</div></td>'+
+      '<td style="max-width:170px"><div style="font-size:12px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+svc+'</div></td>'+
+      '<td><div style="font-weight:700;color:var(--gold)">\u20B9'+price+'</div></td>'+
+      '<td><select class="isel" onchange="updatePayment(\''+ref+'\',this.value)" style="background:'+ps.bg+';color:'+ps.color+';border-color:'+ps.bdr+'">'+payOpts+'</select></td>'+
+      '<td><select class="isel" onchange="updateStatus(\''+ref+'\',this.value)" style="background:'+ss.bg+';color:'+ss.color+';border-color:'+ss.color+'66">'+statusOpts+'</select></td>'+
+      '<td><button class="del-btn" onclick="askDelete(\''+ref+'\',this)">\uD83D\uDDD1 Del</button></td>';
+    tbody.appendChild(tr);
+  });
+}
+
+function updatePayment(ref, val) {
+  google.script.run
+    .withSuccessHandler(function(r) {
+      if (r && r.success) { showToast('Payment: ' + val, 'ok'); loadData(); }
+      else showToast('Error updating payment', 'err');
+    })
+    .withFailureHandler(function() { showToast('Failed to update', 'err'); })
+    .updatePaymentStatus(ref, val);
+}
+
+function updateStatus(ref, val) {
+  google.script.run
+    .withSuccessHandler(function(r) {
+      if (r && r.success) { showToast('Status: ' + val, 'ok'); loadData(); }
+      else showToast('Error updating status', 'err');
+    })
+    .withFailureHandler(function() { showToast('Failed to update', 'err'); })
+    .updateBookingStatus(ref, val);
+}
+
+function askDelete(ref, btn) {
+  pendingRef = ref; pendingBtn = btn;
+  document.getElementById('cdialog-msg').textContent = 'Delete booking ' + ref + '? This cannot be undone.';
+  document.getElementById('cdialog').classList.add('open');
+}
+function closeDialog() {
+  document.getElementById('cdialog').classList.remove('open');
+  pendingRef = null; pendingBtn = null;
+}
+function doDelete() {
+  var ref = pendingRef; var btn = pendingBtn;
+  closeDialog();
+  if (!ref) return;
+  if (btn) { btn.textContent = '…'; btn.disabled = true; }
+  google.script.run
+    .withSuccessHandler(function(r) {
+      if (r && r.success) {
+        showToast('Deleted ' + ref, 'ok');
+        allRows = allRows.filter(function(x){ return x['Ref'] !== ref; });
+        filterTable(); loadData();
+      } else {
+        showToast('Error deleting', 'err');
+        if (btn) { btn.textContent = '\uD83D\uDDD1 Del'; btn.disabled = false; }
+      }
+    })
+    .withFailureHandler(function() {
+      showToast('Failed to delete', 'err');
+      if (btn) { btn.textContent = '\uD83D\uDDD1 Del'; btn.disabled = false; }
+    })
+    .deleteBooking(ref);
+}
+
+function buildBarChart(id, data, total) {
+  var el = document.getElementById(id);
+  if (!el) return;
+  el.innerHTML = '';
+  var entries = [];
+  for (var k in data) entries.push([k, data[k]]);
+  entries.sort(function(a,b){ return b[1]-a[1]; });
+  entries = entries.slice(0,6);
+  var max = entries.length ? entries[0][1] : 1;
+  entries.forEach(function(e) {
+    var pct = Math.round(e[1]/max*100);
+    var d = document.createElement('div'); d.className = 'bar-row';
+    d.innerHTML = '<div class="bar-label" title="'+e[0]+'">'+e[0]+'</div><div class="bar-track"><div class="bar-fill" style="width:'+pct+'%"></div></div><div class="bar-count">'+e[1]+'</div>';
+    el.appendChild(d);
+  });
+  if (!entries.length) el.innerHTML = '<div style="color:var(--muted);font-size:12px">No data yet</div>';
+}
+
+function buildBarChartColored(id, data, total, cmap) {
+  var el = document.getElementById(id);
+  if (!el) return;
+  el.innerHTML = '';
+  var entries = [];
+  for (var k in data) entries.push([k, data[k]]);
+  var max = 1;
+  entries.forEach(function(e){ if(e[1]>max) max=e[1]; });
+  entries.forEach(function(e) {
+    var pct = Math.round(e[1]/max*100);
+    var c   = (cmap && cmap[e[0]]) || '#C8A84B';
+    var d   = document.createElement('div'); d.className = 'bar-row';
+    d.innerHTML = '<div class="bar-label" title="'+e[0]+'" style="color:'+c+'">'+e[0]+'</div><div class="bar-track"><div class="bar-fill" style="width:'+pct+'%;background:'+c+'"></div></div><div class="bar-count" style="color:'+c+'">'+e[1]+'</div>';
+    el.appendChild(d);
+  });
+  if (!entries.length) el.innerHTML = '<div style="color:var(--muted);font-size:12px">No members yet</div>';
+}
+
+function showToast(msg, type) {
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show' + (type ? ' '+type : '');
+  clearTimeout(t._t);
+  t._t = setTimeout(function(){ t.className = 'toast'; }, 3000);
+}
+
+loadData();
+</script>
+</body>
+</html>
